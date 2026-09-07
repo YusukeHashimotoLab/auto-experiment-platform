@@ -1,0 +1,29 @@
+# Secrets — never commit API keys
+.env
+*.key
+credentials*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Logs and local experiment output
+logs/
+*.log
+
+# ML weights and training data (not published — see detection/README.md)
+detection/weights/
+detection/dataset/
+*.pt
+
+# CAD temporary/backup files
+*.f3d.bak
+~$*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

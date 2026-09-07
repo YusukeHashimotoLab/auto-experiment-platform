@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this platform, please cite the paper below."
+title: "Automated Experimentation Platform"
+type: software
+# TODO: list all authors in paper order
+authors:
+  - family-names: Hashimoto
+    given-names: Yusuke
+    affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
+license: MIT
+repository-code: "https://github.com/TODO-ORG/auto-experiment-platform"
+preferred-citation:
+  type: article
+  title: "Quantitative control and improved reproducibility of materials synthesis processes using an automated experimentation platform"
+  journal: "Science and Technology of Advanced Materials: Methods"
+  year: 2026
+  # TODO: add DOI, volume, and article number upon acceptance
+  authors:
+    - family-names: Hashimoto
+      given-names: Yusuke
