@@ -1,0 +1,110 @@
+{
+  "name": "ZIF-8 two-solution mixing (solution 2 dispensed at pipette speed 1)",
+  "description": "JSON equivalent of the CSV-runner sequence that produced the paper's ZIF-8 batches (src/flow/csv_runner/, historical lab version 4584333). Robot 1 dispenses 5 mL of solution 1 (Zn(NO3)2/PEG in DMF) at pipette speed 9 (nominal 0.45 s for 5 mL), then Robot 2 dispenses 5 mL of solution 2 (2-mIm/TEA in DMF) at pipette speed 1 (nominal 5.1 s for 5 mL, 0.98 mL/s). Both aspirate at speed 1. Each robot descends onto its source vial (0.1 mm), aspirates, rises, swings over the vial on the balance (+/-90 deg), lowers 120 mm into it, tares the balance at that lowered position, dispenses, reads the mass before rising and then returns home; go_home also undoes the rotation. The single capture_and_save at the very end is the only addition of this public example over the sequence that was run: the CSV runner took no photograph. Times are nominal values from the Picus 2 speed table (10.2 / 2.9 / 0.9 s per 10 mL at speeds 1 / 5 / 9); the speed step, not the time, is the setting under control. Geometry values are those of the lab's committed control sheet and must be re-measured for another fixture.",
+  "steps": [
+    {
+      "action": "move_z",
+      "robot_id": 1,
+      "distance": -0.1
+    },
+    {
+      "action": "aspirate",
+      "robot_id": 1,
+      "volume": 5.0,
+      "speed": 1
+    },
+    {
+      "action": "move_z",
+      "robot_id": 1,
+      "distance": 0.1
+    },
+    {
+      "action": "rotate_relative",
+      "robot_id": 1,
+      "angle": 90.0,
+      "speed": "low"
+    },
+    {
+      "action": "move_z",
+      "robot_id": 1,
+      "distance": -120.0
+    },
+    {
+      "action": "tare_scale",
+      "delay": 1.0
+    },
+    {
+      "action": "dispense",
+      "robot_id": 1,
+      "volume": 5.0,
+      "speed": 9
+    },
+    {
+      "action": "measure_weight",
+      "stabilization_count": 3
+    },
+    {
+      "action": "move_z",
+      "robot_id": 1,
+      "distance": 120.0
+    },
+    {
+      "action": "go_home",
+      "robot_id": 1
+    },
+    {
+      "action": "move_z",
+      "robot_id": 2,
+      "distance": -0.1
+    },
+    {
+      "action": "aspirate",
+      "robot_id": 2,
+      "volume": 5.0,
+      "speed": 1
+    },
+    {
+      "action": "move_z",
+      "robot_id": 2,
+      "distance": 0.1
+    },
+    {
+      "action": "rotate_relative",
+      "robot_id": 2,
+      "angle": -90.0,
+      "speed": "low"
+    },
+    {
+      "action": "move_z",
+      "robot_id": 2,
+      "distance": -120.0
+    },
+    {
+      "action": "tare_scale",
+      "delay": 1.0
+    },
+    {
+      "action": "dispense",
+      "robot_id": 2,
+      "volume": 5.0,
+      "speed": 1
+    },
+    {
+      "action": "measure_weight",
+      "stabilization_count": 3
+    },
+    {
+      "action": "move_z",
+      "robot_id": 2,
+      "distance": 120.0
+    },
+    {
+      "action": "go_home",
+      "robot_id": 2
+    },
+    {
+      "action": "capture_and_save",
+      "file_path": ""
+    }
+  ]
+}

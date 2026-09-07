@@ -1,0 +1,21 @@
+# Dependencies for src/monitoring (dashboard + camera recorder), run on the
+# control PC. Versions pinned to match the reference implementation.
+#
+# The Pi-side agent (pi/pi_sensor_agent.py) is intentionally NOT covered by
+# this file — it only needs smbus/smbus2 plus the Python standard library,
+# installed on the Pi with `sudo apt install python3-smbus` (see
+# src/monitoring/README.md).
+
+fastapi==0.136.1
+uvicorn==0.47.0
+zeroconf==0.149.9
+python-multipart==0.0.29
+
+# opencv-python's wheel must include the `aruco` module (used for AprilTag
+# detection); the standard 4.x wheels from PyPI do include it, so no extra
+# contrib package is required.
+opencv-python==4.12.0.88   # same pin as the root requirements.txt (4.13+ breaks C920 white-balance control used by src/imaging); the aruco module is included in 4.12 wheels
+numpy==2.4.4
+
+# Only needed to read src/monitoring/config.yaml / config.example.yaml.
+PyYAML==6.0.3

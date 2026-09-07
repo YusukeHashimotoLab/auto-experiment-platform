@@ -1,0 +1,12 @@
+parameter,value,note
+# provenance,,"The values below are the ones in the lab's committed control sheet (state at commit 4584333 of the internal runner), not necessarily the values of every ZIF-8 batch: robot2_dispense_speed was varied over 1 / 5 / 9 across the nine batches. Rows whose parameter starts with # are ignored by the runner."
+robot1_volume_mL,5,Robot 1 aspirate/dispense volume (0-10 mL; 0 skips Robot 1)
+robot2_volume_mL,5.0,Robot 2 aspirate/dispense volume (0-10 mL; 0 skips Robot 2)
+aspirate_z_descent_mm,0.1,Z descent onto the source vial before aspirating (0.1-200 mm)
+dispense_z_descent_mm,120,Z descent onto the vial on the balance before dispensing (0.1-200 mm)
+aspirate_speed,1,Pipette speed used for aspiration by both robots (1-9; 1 slowest). Optional row; 1 is used if it is missing - the value in force for the paper's runs
+robot1_dispense_speed,9,Robot 1 pipette speed for dispensing (1-9; 1 slowest 9 fastest)
+robot2_dispense_speed,1,Robot 2 pipette speed for dispensing (1-9; 1 slowest 9 fastest). The published ZIF-8 runs compare 1 / 5 / 9 here
+robot1_angle_deg,90,Robot 1 base rotation from the source vial to the balance (-360 to 360 deg)
+robot2_angle_deg,-90,Robot 2 base rotation from the source vial to the balance (-360 to 360 deg)
+capture_photo,FALSE,TRUE to photograph the vial once at the end of the run (needs a camera). Optional row; FALSE - the sequence used for the paper's runs - if it is missing

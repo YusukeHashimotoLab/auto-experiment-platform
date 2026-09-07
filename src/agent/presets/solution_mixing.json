@@ -1,0 +1,26 @@
+{
+  "label": "二液混合（ビーカーA・B → C へ各 5mL）",
+  "description": "Robot 1でビーカーAから5mL吸引しビーカーCへ分注。Robot 2でビーカーBから5mL吸引しビーカーCへ分注。",
+  "template": {
+    "name": "複数ロボットによる混合ワークフロー",
+    "description": "Robot 1でビーカーAからCへ、Robot 2でビーカーBからCへ5mlずつ液体を移動する",
+    "steps": [
+      {"action": "move_z", "robot_id": 1, "distance": -165},
+      {"action": "aspirate", "robot_id": 1, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 1, "distance": 165},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 90, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -160},
+      {"action": "dispense", "robot_id": 1, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 1, "distance": 160},
+      {"action": "go_home", "robot_id": 1},
+      {"action": "move_z", "robot_id": 2, "distance": -165},
+      {"action": "aspirate", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 165},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -90, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -160},
+      {"action": "dispense", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 160},
+      {"action": "go_home", "robot_id": 2}
+    ]
+  }
+}

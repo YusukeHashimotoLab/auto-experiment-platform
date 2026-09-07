@@ -1,0 +1,47 @@
+# ===================================================================
+# Environment-dependent settings for the control core (single source).
+#
+# Copy this file to config.yaml in the repository root and edit it for
+# your own setup; config.yaml is gitignored. If config.yaml is absent
+# this example file is used, and if it is absent too the built-in
+# DEFAULTS in src/config.py apply (which hold the same values).
+#
+# Sensor-dashboard ports and the video-recording camera index live in
+# src/monitoring/config.yaml (see src/monitoring/config.example.yaml);
+# src.config re-exports them so there is still only one source per value.
+# ===================================================================
+
+# Connection ports per robot (key = robot_id).
+# Windows uses COM ports; on Linux/macOS use /dev/tty* paths instead.
+# A robot without a picus2_address entry has no electronic pipette.
+robots:
+  1:
+    dobot_port: COM3
+    picus2_address: COM4
+  2:
+    dobot_port: COM5
+    picus2_address: COM6
+  3:
+    dobot_port: COM7      # Robot 3 has no pipette
+
+# Devices shared by all robots.
+shared_devices:
+  scale_port: COM8        # BCE8221 balance
+  camera_index: 0         # webcam used by capture_and_save
+
+# Dobot workspace limits. WorkspaceValidator checks every move against
+# these BEFORE the robot is commanded, for all robots and in mock mode.
+# The values below are the Dobot Magician specification envelope, NOT a
+# safety-tuned cell. The setup used for the paper ran with narrower limits
+# (z -130..110 mm, joint1 -48..110 deg). Measure your own cell (vials,
+# balance, stirrer) and tighten these before any real run.
+
+workspace:
+  x_min: -300.0
+  x_max: 300.0
+  y_min: -300.0
+  y_max: 300.0
+  z_min: -130.0
+  z_max: 150.0
+  joint1_min: -135.0
+  joint1_max: 135.0

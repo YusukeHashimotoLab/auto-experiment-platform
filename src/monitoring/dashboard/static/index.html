@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+</head>
+<body>
+    
+    <!-- Floating Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Lab <span>sensor dashboard</span></div>
+            
+            <div class="tab-bar" id="tab-bar">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active">DASHBOARD</button>
+                <button onclick="switchTab('unified')" id="tab-unified" class="tab-btn">UNIFIED VIEW</button>
+                <button onclick="switchTab('camera')" id="tab-camera" class="tab-btn">CAMERA</button>
+            </div>
+
+            <div id="connection-status" class="btn-ghost" style="font-size: 10px; padding: 8px 18px; border-radius: 100px; opacity: 0.8;">
+                SCANNING...
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- View: Dashboard (Device List & Settings) -->
+        <div id="view-dashboard" class="view-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Left: Device List -->
+                <div class="glass-card">
+                    <h3 class="section-title">Network Nodes</h3>
+                    <div id="device-container">
+                        <!-- Dynamic Device List -->
+                    </div>
+
+                    <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-glass);">
+                        <h3 class="section-title">Agent Deployment</h3>
+                        <div style="display: flex; gap: 12px;">
+                            <input type="text" id="deploy-user" value="pi" placeholder="User" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 100px; padding: 12px 25px; color: white; width: 110px; font-size: 12px; font-weight: 600;">
+                            <select id="deploy-target" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 100px; padding: 12px 25px; color: white; flex: 1; font-size: 12px; font-weight: 600; appearance: none;">
+                                <option value="">Select Target Node</option>
+                            </select>
+                            <button id="deploy-btn" class="btn-primary">DEPLOY</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Storage & Filename Settings -->
+                <div class="glass-card">
+                    <h3 class="section-title">Storage & Session Settings</h3>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="space-y-2">
+                            <label style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">Save Directory Path</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="config-save-dir" class="btn-ghost" style="flex: 1; text-align: left; padding: 14px 20px; font-family: 'JetBrains Mono'; font-size: 11px; cursor: text; text-transform: none;">
+                                <button onclick="pickTargetFolder()" class="btn-primary" style="background: var(--accent-yellow); color: var(--bg-deep); font-size: 10px;">FIND FOLDER</button>
+                                <button onclick="openTargetFolder()" class="btn-ghost" style="font-size: 10px; padding: 10px 15px;">OPEN</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">Filename Prefix (e.g. Experiment_A_)</label>
+                            <input type="text" id="config-prefix" placeholder="No Prefix" class="btn-ghost" style="width: 100%; text-align: left; padding: 14px 20px; font-family: 'JetBrains Mono'; font-size: 11px; cursor: text; text-transform: none;">
+                        </div>
+
+                        <div style="margin-top: 10px; padding-top: 25px; border-top: 1px solid var(--border-glass);">
+                            <button id="update-config-btn" class="btn-primary" style="width: 100%; background: var(--accent-yellow); color: var(--bg-deep);">APPLY SETTINGS</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Unified Graphs -->
+        <div id="view-unified" class="view-content hidden">
+            <div id="unified-container" style="display: grid; grid-template-columns: 1fr; gap: 30px;"></div>
+        </div>
+
+        <!-- View: Camera Tracking -->
+        <div id="view-camera" class="view-content hidden">
+            <div class="camera-tracking-layout">
+                <div class="glass-card camera-canvas-card">
+                    <div class="chart-header-group" style="margin-bottom: 16px;">
+                        <h3 class="section-title" style="margin:0">Live Camera Tracking</h3>
+                        <div class="current-value-pill" id="tracking-fps">-- Hz</div>
+                    </div>
+                    <div class="camera-canvas-wrapper" id="tracking-wrapper">
+                        <video id="tracking-video" autoplay muted playsinline></video>
+                        <canvas id="tracking-overlay"></canvas>
+                        <div class="camera-tracking-banner" id="tracking-banner">
+                            Enable WEBCAM in the bottom bar to start tracking.
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card camera-tracking-sidebar">
+                    <h3 class="section-title">Detection Settings</h3>
+                    <div class="control-row">
+                        <label>Tag Size (mm)</label>
+                        <input type="number" id="tag-size-input" value="25" min="5" max="500" step="0.5">
+                    </div>
+                    <div class="control-row">
+                        <label>Detect Rate (Hz)</label>
+                        <input type="number" id="tracking-rate-input" value="10" min="1" max="30" step="1">
+                    </div>
+                    <div class="control-row">
+                        <label class="toggle-row">
+                            <input type="checkbox" id="tracking-enabled" checked>
+                            <span>Live detection</span>
+                        </label>
+                    </div>
+                    <div class="control-row">
+                        <label class="toggle-row">
+                            <input type="checkbox" id="tracking-smooth" checked>
+                            <span>Smooth pose (reject spikes)</span>
+                        </label>
+                    </div>
+                    <div class="control-row">
+                        <label>Deadzone (± snap to 0)</label>
+                        <input type="number" id="deadzone-input" value="0.8" min="0" max="20" step="0.1">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 6px;">
+                        <button id="zero-all-btn" class="btn-primary" style="background: var(--accent-yellow); color: var(--bg-deep); flex: 1; font-size: 11px;">SET ZERO</button>
+                        <button id="clear-zero-btn" class="btn-ghost" style="flex: 1; font-size: 11px;">CLEAR</button>
+                    </div>
+                    <div id="zero-status" style="font-size: 10px; color: var(--text-dim); margin-top: 6px; text-align: center; font-family: 'JetBrains Mono', monospace;">no zero set</div>
+
+                    <div class="big-readout-wrapper">
+                        <div class="big-readout-header">
+                            <h3 class="section-title" style="margin:0">Focus Marker</h3>
+                            <select id="focus-marker-select" class="focus-select"><option value="">— auto —</option></select>
+                        </div>
+                        <div id="big-readout" class="big-readout">
+                            <div class="big-readout-empty">No marker selected.</div>
+                        </div>
+                    </div>
+
+                    <div class="markers-table-wrapper">
+                        <div class="chart-header-group" style="margin-top: 0;">
+                            <h3 class="section-title" style="margin: 0">Detected Markers</h3>
+                            <span id="markers-mode-tag" class="markers-mode-tag">ABSOLUTE</span>
+                        </div>
+                        <div class="markers-table-scroll">
+                            <table class="markers-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th id="th-x">X mm</th>
+                                        <th id="th-y">Y mm</th>
+                                        <th id="th-z">Z mm</th>
+                                        <th id="th-r">R°</th>
+                                        <th id="th-p">P°</th>
+                                        <th id="th-yaw">Y°</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="markers-tbody">
+                                    <tr><td colspan="7" class="markers-empty">— no markers detected —</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Dynamic Tabs Container -->
+        <div id="view-device-container" class="view-content hidden"></div>
+    </main>
+
+    <!-- Experiment Control Bar -->
+    <div class="experiment-bar">
+        <div id="active-count" style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">0 NODES</div>
+        <div style="height: 20px; width: 1px; background: var(--border-glass);"></div>
+        <div id="timer">00:00.0</div>
+        <button id="record-btn" class="btn-primary" style="background: var(--accent-green); color: white; min-width: 160px;">START RECORDING</button>
+        <button id="stop-btn" class="btn-ghost" disabled>STOP</button>
+        <div style="height: 20px; width: 1px; background: var(--border-glass);"></div>
+        <label class="webcam-toggle">
+            <input type="checkbox" id="webcam-toggle">
+            <span id="webcam-toggle-label">WEBCAM OFF</span>
+        </label>
+    </div>
+
+    <!-- Webcam Preview -->
+    <div id="webcam-preview" class="hidden">
+        <div class="webcam-header">
+            <span class="webcam-status" id="webcam-status">STANDBY</span>
+            <div class="webcam-actions">
+                <button class="webcam-mic" id="webcam-mic-btn" title="Toggle microphone">MIC ON</button>
+                <button class="webcam-min" id="webcam-min-btn" title="Minimize / restore">−</button>
+                <button class="webcam-close" onclick="document.getElementById('webcam-toggle').click()">✕</button>
+            </div>
+        </div>
+        <video id="webcam-video" autoplay muted playsinline></video>
+    </div>
+
+    <!-- Notification Center -->
+    <div id="log-container">
+        <div id="logs">System ready.</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

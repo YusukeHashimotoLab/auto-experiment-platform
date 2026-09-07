@@ -1,0 +1,47 @@
+{
+  "hidden": true,
+  "label": "秤量分注①②③④　フルサイクル（位置調整）",
+  "description": "Robot 3でビンを天秤に載せ、Robot 1・2の分注位置を確認し、搬送（スターラー→置き場→コンベア→ホーム）まで通しで実行。",
+  "template": {
+    "name": "ビン→天秤→Robot 1・2 位置調整→搬送",
+    "description": "wdc_1〜4を統合。Robot 3でビンを天秤へ移動、Robot 1・2の分注経路確認、スターラー経由で置き場へ搬送しコンベア動作後ホームへ戻る。",
+    "steps": [
+      {"action": "move_radial", "robot_id": 3, "distance": 45},
+      {"action": "move_z", "robot_id": 3, "distance": 140},
+      {"action": "rotate_relative", "robot_id": 3, "angle": 90, "speed": "low"},
+      {"action": "move_radial", "robot_id": 3, "distance": 40},
+      {"action": "move_z", "robot_id": 3, "distance": -50},
+
+      {"action": "move_z", "robot_id": 1, "distance": -170},
+      {"action": "move_z", "robot_id": 1, "distance": 170},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 98.5, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -110},
+      {"action": "move_z", "robot_id": 1, "distance": 110},
+      {"action": "rotate_relative", "robot_id": 1, "angle": -98.5, "speed": "low"},
+
+      {"action": "move_z", "robot_id": 2, "distance": -170},
+      {"action": "move_z", "robot_id": 2, "distance": 170},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -96.5, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -110},
+      {"action": "move_z", "robot_id": 2, "distance": 110},
+      {"action": "rotate_relative", "robot_id": 2, "angle": 96.5, "speed": "low"},
+
+      {"action": "move_z", "robot_id": 3, "distance": 60},
+      {"action": "move_radial", "robot_id": 3, "distance": -50},
+      {"action": "move_slider", "robot_id": 3, "position": 800},
+      {"action": "rotate_relative", "robot_id": 3, "angle": 90, "speed": "low"},
+      {"action": "move_z", "robot_id": 3, "distance": -130},
+      {"action": "wait", "robot_id": 3, "seconds": 5},
+      {"action": "move_z", "robot_id": 3, "distance": 50},
+      {"action": "move_slider", "robot_id": 3, "position": 600},
+      {"action": "move_z", "robot_id": 3, "distance": -80},
+      {"action": "move_radial", "robot_id": 3, "distance": -45},
+      {"action": "move_z", "robot_id": 3, "distance": 80},
+      {"action": "move_slider", "robot_id": 3, "position": 0},
+      {"action": "move_conveyer", "robot_id": 2, "index": 0, "speed": 10, "duration": 8},
+      {"action": "move_conveyer", "robot_id": 1, "index": 0, "speed": 10, "duration": 8},
+      {"action": "rotate_relative", "robot_id": 3, "angle": -180, "speed": "low"},
+      {"action": "go_home", "robot_id": 3}
+    ]
+  }
+}

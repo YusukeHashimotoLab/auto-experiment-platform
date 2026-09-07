@@ -1,0 +1,17 @@
+{
+  "hidden": true,
+  "label": "秤量分注②　Robot 1 位置調整",
+  "description": "Robot 1の分注経路の位置確認用。吸引・排出・計量なしで移動のみ行い元に戻る。",
+  "template": {
+    "name": "Robot 1 分注位置調整",
+    "description": "Robot 1でビーカーA位置まで下降→上昇→天秤上のビン位置まで回転・下降→上昇→元の位置へ戻る。",
+    "steps": [
+      {"action": "move_z", "robot_id": 1, "distance": -170},
+      {"action": "move_z", "robot_id": 1, "distance": 170},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 98.5, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -110},
+      {"action": "move_z", "robot_id": 1, "distance": 110},
+      {"action": "rotate_relative", "robot_id": 1, "angle": -98.5, "speed": "low"}
+    ]
+  }
+}

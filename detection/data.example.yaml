@@ -1,0 +1,10 @@
+# Example Ultralytics dataset config for the electric-pipette detector.
+#
+# Copy to data.yaml (gitignored) and adjust `path` if your dataset lives
+# elsewhere. The default layout matches what prepare_dataset.py produces.
+path: ./dataset
+train: train/images
+val: val/images
+
+names:
+  0: electric_pipette

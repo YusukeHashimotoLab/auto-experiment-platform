@@ -27,3 +27,24 @@ detection/dataset/
 .DS_Store
 .idea/
 .vscode/
+
+# Imaging system (src/imaging/): per-PC camera selection and local captures
+src/imaging/config/camera_local.json
+imaging_data/
+panels/
+
+# Control core (src/flow/, src/devices/): per-environment ports and workspace
+# limits — copy config.example.yaml to config.yaml and edit that
+/config.yaml
+
+# CSV runner (src/flow/csv_runner/): the lab's own parameter sheet and the
+# results written back beside it — copy control.example.csv to control.csv
+src/flow/csv_runner/control.csv
+src/flow/csv_runner/results*.csv
+
+# Monitoring (src/monitoring/): per-environment port config, not published
+src/monitoring/config.yaml
+
+# Runtime output of flow runs and monitoring
+experiment_data/
+captured_images/

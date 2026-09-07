@@ -1,0 +1,238 @@
+"""実験セッションのライフサイクル管理
+
+「ロボット初期化 → 実行 → 中断時は緊急停止 / エラー時はホーム復帰 → 後始末」
+の骨格を一元化する。安全系（緊急停止・クリーンアップ）の実装が複数の
+ランナーに分かれて将来片方だけ修正される事故を防ぐのが目的。
+
+実機モードと Mock モードで同じ安全枠を使うため、ロボット／共有デバイスの
+生成はファクトリ経由で差し替えられる（``mock=True`` で Mock 実装に切り替え）。
+
+使用例:
+    session = ExperimentSession(mock=args.mock)
+
+    async def body():
+        robot = await session.add_robot(1, use_picus2=True)
+        shared = await session.add_shared(use_scale=True)
+        ...実験手順...
+        return results
+
+    try:
+        results = await session.run(body)
+    finally:
+        exp_logger.finalize(session.status, session.error)
+"""
+import asyncio
+import logging
+from typing import Awaitable, Callable, Dict, Optional
+
+from src import config as lab_config
+from src.devices.safety.lab_robot import LabRobot
+from src.devices.safety.mock_robot import MockLabRobot, MockSharedDevices
+from src.devices.safety.shared_devices import SharedDevices
+from src.devices.safety.validators import default_workspace_validator
+
+logger = logging.getLogger(__name__)
+
+
+def default_robot_factory(robot_id, *, use_picus2, ports, workspace_validator):
+    """実機 LabRobot を生成する既定ファクトリ"""
+    return LabRobot(
+        use_dobot=True,
+        use_picus2=use_picus2,
+        dobot_port=ports["dobot_port"],
+        picus2_address=ports.get("picus2_address", ""),
+        picus2_connection_type="usb",
+        workspace_validator=workspace_validator,
+    )
+
+
+def mock_robot_factory(robot_id, *, use_picus2, ports, workspace_validator):
+    """MockLabRobot を生成するファクトリ（実機なしでの動作確認用）
+
+    可動域バリデータは実機と同じものを渡す。Mock でも可動域違反が
+    実行前に検出されるため、フロー JSON の安全確認に使える。
+    """
+    return MockLabRobot(
+        use_dobot=True,
+        use_picus2=use_picus2,
+        dobot_port=ports.get("dobot_port", ""),
+        picus2_address=ports.get("picus2_address", ""),
+        workspace_validator=workspace_validator,
+    )
+
+
+def default_shared_factory(*, use_scale, use_camera, config):
+    """実機 SharedDevices を生成する既定ファクトリ"""
+    return SharedDevices(
+        use_scale=use_scale,
+        use_camera=use_camera,
+        scale_port=config["scale_port"],
+        camera_index=config["camera_index"],
+    )
+
+
+def mock_shared_factory(*, use_scale, use_camera, config):
+    """MockSharedDevices を生成するファクトリ"""
+    return MockSharedDevices(use_scale=use_scale, use_camera=use_camera)
+
+
+class ExperimentSession:
+    """ロボット群・共有デバイスの初期化から後始末までを管理するセッション
+
+    Args:
+        mock: True なら Mock 実装（MockLabRobot / MockSharedDevices）を使う
+        robot_factory: ロボット生成関数の差し替え（テスト・GUI 用）
+        shared_factory: 共有デバイス生成関数の差し替え
+        robot_ports: robot_id → ポート設定。省略時は config.yaml
+        shared_config: 共有デバイス設定。省略時は config.yaml
+        workspace_validator: 可動域バリデータ。省略時は config.yaml の workspace
+
+    Attributes:
+        robots: robot_id → 初期化済みロボット（初期化に失敗したものは入らない）
+        shared: 初期化済み共有デバイス（add_shared 未呼び出しなら None）
+        status: 実行結果 ("completed" / "aborted" / "failed")。run() が設定する
+        error: エラーメッセージ（completed 時は None）
+    """
+
+    def __init__(
+        self,
+        *,
+        mock: bool = False,
+        robot_factory: Optional[Callable] = None,
+        shared_factory: Optional[Callable] = None,
+        robot_ports: Optional[dict] = None,
+        shared_config: Optional[dict] = None,
+        workspace_validator=None,
+    ):
+        self.mock = mock
+        self.robot_factory = robot_factory or (
+            mock_robot_factory if mock else default_robot_factory
+        )
+        self.shared_factory = shared_factory or (
+            mock_shared_factory if mock else default_shared_factory
+        )
+        self._robot_ports = robot_ports
+        self._shared_config = shared_config
+        self.workspace_validator = workspace_validator or default_workspace_validator()
+
+        self.robots: Dict[int, object] = {}
+        self.shared = None
+        self.status: str = "failed"
+        self.error: Optional[str] = "実行が中断されました"
+
+    # ------------------------------------------------------------------
+    # 設定
+    # ------------------------------------------------------------------
+    def robot_ports(self) -> dict:
+        if self._robot_ports is None:
+            self._robot_ports = lab_config.get_robot_ports()
+        return self._robot_ports
+
+    def shared_config(self) -> dict:
+        if self._shared_config is None:
+            self._shared_config = lab_config.get_shared_devices()
+        return self._shared_config
+
+    # ------------------------------------------------------------------
+    # デバイス登録
+    # ------------------------------------------------------------------
+    async def add_robot(self, robot_id: int, *, use_picus2: bool = False):
+        """設定のポートでロボットを生成・初期化して登録する
+
+        現在位置をホームとして設定する。初期化失敗時は例外を送出し、
+        ロボットは登録されない。
+        """
+        ports = self.robot_ports().get(robot_id)
+        if not self.mock and (not ports or not ports.get("dobot_port")):
+            raise RuntimeError(
+                f"Robot {robot_id} の接続ポートが config.yaml の robots セクションに"
+                f"定義されていません（--robot{robot_id}-dobot / "
+                f"ROBOT{robot_id}_DOBOT_PORT でも指定できます）"
+            )
+        robot = self.robot_factory(
+            robot_id,
+            use_picus2=use_picus2,
+            ports=ports or {},
+            workspace_validator=self.workspace_validator,
+        )
+        # initialize() は失敗時に例外を送出する（戻り値の握りつぶし防止）
+        if not await robot.initialize():
+            raise RuntimeError(f"Robot {robot_id} の初期化に失敗しました")
+        robot.set_current_position_as_home()
+        self.robots[robot_id] = robot
+        logger.info(
+            f"Robot {robot_id} 初期化完了 "
+            f"(dobot={(ports or {}).get('dobot_port') or '-'}, "
+            f"picus2={'有' if use_picus2 else '無'})"
+        )
+        return robot
+
+    async def add_shared(self, *, use_scale: bool = False, use_camera: bool = False):
+        """設定の値で共有デバイスを生成・初期化して登録する"""
+        shared = self.shared_factory(
+            use_scale=use_scale, use_camera=use_camera, config=self.shared_config()
+        )
+        if not await shared.initialize():
+            raise RuntimeError("共有デバイスの初期化に失敗しました")
+        self.shared = shared
+        logger.info("共有デバイス初期化完了")
+        return shared
+
+    # ------------------------------------------------------------------
+    # 安全枠
+    # ------------------------------------------------------------------
+    def emergency_stop_all(self):
+        """登録済み全ロボットを緊急停止する（例外を送出しない）"""
+        for robot in self.robots.values():
+            robot.emergency_stop()
+
+    async def go_home_all(self):
+        """登録済み全ロボットをベストエフォートでホームに戻す"""
+        for rid, robot in self.robots.items():
+            try:
+                logger.info(f"Robot {rid} をホームに戻しています...")
+                await robot.go_home()
+            except Exception:
+                pass
+
+    async def cleanup(self):
+        """全ロボット・共有デバイスをベストエフォートで切断する"""
+        for robot in self.robots.values():
+            try:
+                await robot.cleanup()
+            except Exception:
+                pass
+        if self.shared is not None:
+            try:
+                await self.shared.cleanup()
+            except Exception:
+                pass
+
+    async def run(self, body: Callable[[], Awaitable]):
+        """実験本体を安全枠の中で実行する
+
+        - 正常終了: status="completed" とし body の戻り値を返す
+        - Ctrl+C / キャンセル: 全ロボットを緊急停止して再送出
+          （ホーム復帰の追加動作はさせず、その場で止める）
+        - その他の例外: 全ロボットをホームに戻して再送出
+        - いずれの場合もクリーンアップ（切断）は必ず実行する
+
+        exp_logger の確定は行わない。呼び出し側が finally で
+        ``exp_logger.finalize(session.status, session.error)`` を呼ぶこと。
+        """
+        try:
+            result = await body()
+            self.status, self.error = "completed", None
+            return result
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            logger.warning("中断要求を受信しました。緊急停止します...")
+            self.status, self.error = "aborted", "ユーザーによる中断（Ctrl+C）"
+            self.emergency_stop_all()
+            raise
+        except Exception as e:
+            logger.error(f"実行エラー: {e}")
+            self.status, self.error = "failed", str(e)
+            await self.go_home_all()
+            raise
+        finally:
+            await self.cleanup()

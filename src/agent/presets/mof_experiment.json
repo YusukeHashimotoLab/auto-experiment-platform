@@ -1,0 +1,31 @@
+{
+  "hidden": false,
+  "label": "MOF実験",
+  "description": "Robot 1とRobot 2の分注経路を続けて実行するプリセット（秤量分注②③ Robot 1・2 ベース）。1組目のZ移動を±160mm、2組目のZ移動を±90mmに揃え、R1・R2とも5mLの吸引・排出を行うMOF実験用。",
+  "template": {
+    "name": "MOF実験",
+    "description": "Robot 1でビーカーA位置まで下降→5mL吸引→上昇→天秤上のビン位置まで回転・下降→5mL排出→上昇→元の位置へ戻る。続けてRobot 2でも同様の動作を行う。1組目のZ移動は±160mm、2組目のZ移動は±90mm（上げ幅と下げ幅を一致）、回転角は±90°。",
+    "steps": [
+      {"action": "move_z", "robot_id": 1, "distance": -160},
+      {"action": "aspirate", "robot_id": 1, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 1, "distance": 160},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 90, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -90},
+      {"action": "dispense", "robot_id": 1, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 1, "distance": 90},
+      {"action": "rotate_relative", "robot_id": 1, "angle": -90, "speed": "low"},
+
+      {"action": "move_z", "robot_id": 2, "distance": -160},
+      {"action": "aspirate", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 160},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -90, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -90},
+      {"action": "dispense", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 90},
+      {"action": "rotate_relative", "robot_id": 2, "angle": 90, "speed": "low"},
+
+      {"action": "go_home", "robot_id": 1},
+      {"action": "go_home", "robot_id": 2}
+    ]
+  }
+}

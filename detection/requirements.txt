@@ -1,0 +1,16 @@
+# Python dependencies for the object-detection module (detection/).
+#   pip install -r detection/requirements.txt
+#
+# NOTE ON LICENSING: ultralytics is AGPL-3.0. This is why the module lives
+# in its own directory, separate from the MIT-licensed src/ code — see
+# detection/README.md and the top-level README's "Licensing" section.
+#
+# Version pin: the exact ultralytics version used for the paper's training
+# run could not be recovered from the original machine (no virtualenv or
+# pip metadata for it was found; only Ultralytics' own settings.json,
+# confirming the package had been used, survived). The run's args.yaml
+# contains keys (`end2end`, `rle`, `angle`, `copy_paste_mode`, `multi_scale`,
+# `compile`) that only exist in the Ultralytics 8.3.x series, so that
+# series is pinned here. If you need to reproduce results exactly, prefer
+# the latest 8.3.x patch release.
+ultralytics>=8.3.0,<8.4.0

@@ -1,0 +1,24 @@
+{
+  "hidden": false,
+  "label": "秤量分注②③　Robot 1・2 位置調整（高さ半分）",
+  "description": "Robot 1とRobot 2の分注経路を続けて確認する統合プリセット。Z移動距離は通常版の半分で、安全に位置確認を行うためのもの。",
+  "template": {
+    "name": "Robot 1・2 分注位置調整（高さ半分）",
+    "description": "Robot 1でビーカーA位置まで下降→上昇→天秤上のビン位置まで回転・下降→上昇→元の位置へ戻る。続けてRobot 2でも同様の動作を行う。Z移動距離は通常版の半分、回転角は±90°。",
+    "steps": [
+      {"action": "move_z", "robot_id": 1, "distance": -85},
+      {"action": "move_z", "robot_id": 1, "distance": 85},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 90, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -55},
+      {"action": "move_z", "robot_id": 1, "distance": 55},
+      {"action": "rotate_relative", "robot_id": 1, "angle": -90, "speed": "low"},
+
+      {"action": "move_z", "robot_id": 2, "distance": -85},
+      {"action": "move_z", "robot_id": 2, "distance": 85},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -90, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -55},
+      {"action": "move_z", "robot_id": 2, "distance": 55},
+      {"action": "rotate_relative", "robot_id": 2, "angle": 90, "speed": "low"}
+    ]
+  }
+}

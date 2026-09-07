@@ -1,0 +1,5 @@
+{
+  "_comment": "Template for config/camera_local.json. Copy this file and edit it (camera_local.json itself is not tracked in git). On a PC with multiple webcams attached, this specifies which one to use for measurement. List candidates with `python list_cameras.py` (use --snapshot to save a picture from each camera). win32_device_path matches a substring of the DevicePath, win32_device_name matches a substring of the name. If both are given, path takes priority. If neither is given, the default name 'HD Pro Webcam C920' is used.",
+  "win32_device_path": "",
+  "win32_device_name": ""
+}

@@ -1,0 +1,27 @@
+{
+  "hidden": true,
+  "label": "秤量分注④　搬送",
+  "description": "Robot 3で天秤上のビンをスターラー経由で置き場へ移動し、コンベアを動作させてホームへ戻る。",
+  "template": {
+    "name": "ビン搬送（スターラー→置き場→コンベア）",
+    "description": "Robot 3で天秤上のビンを持ち上げ、スライダーでスターラー位置へ移動して撹拌待機後、置き場へ移動して降ろし、コンベアを動作させてホームへ戻る。",
+    "steps": [
+      {"action": "move_z", "robot_id": 3, "distance": 60},
+      {"action": "move_radial", "robot_id": 3, "distance": -50},
+      {"action": "move_slider", "robot_id": 3, "position": 800},
+      {"action": "rotate_relative", "robot_id": 3, "angle": 90, "speed": "low"},
+      {"action": "move_z", "robot_id": 3, "distance": -130},
+      {"action": "wait", "robot_id": 3, "seconds": 5},
+      {"action": "move_z", "robot_id": 3, "distance": 50},
+      {"action": "move_slider", "robot_id": 3, "position": 600},
+      {"action": "move_z", "robot_id": 3, "distance": -80},
+      {"action": "move_radial", "robot_id": 3, "distance": -45},
+      {"action": "move_z", "robot_id": 3, "distance": 80},
+      {"action": "move_slider", "robot_id": 3, "position": 0},
+      {"action": "move_conveyer", "robot_id": 2, "index": 0, "speed": 10, "duration": 8},
+      {"action": "move_conveyer", "robot_id": 1, "index": 0, "speed": 10, "duration": 8},
+      {"action": "rotate_relative", "robot_id": 3, "angle": -180, "speed": "low"},
+      {"action": "go_home", "robot_id": 3}
+    ]
+  }
+}

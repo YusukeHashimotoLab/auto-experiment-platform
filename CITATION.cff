@@ -1,20 +1,42 @@
 cff-version: 1.2.0
-message: "If you use this platform, please cite the paper below."
+message: "If you use this software, please cite both the software itself and the paper below."
 title: "Automated Experimentation Platform"
+abstract: >-
+  Open-source control software for an automated materials-synthesis platform:
+  JSON-defined experimental flows executed on robot arms with electronic
+  pipettes, an electronic balance, hot-plate stirrers, cameras and IoT sensors.
 type: software
-# TODO: list all authors in paper order
+# TODO: list all authors in paper order, with ORCID iDs, before release.
 authors:
   - family-names: Hashimoto
     given-names: Yusuke
     affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
+    # TODO: add ORCID, e.g. orcid: "https://orcid.org/0000-0000-0000-0000"
+  - name: "TODO: remaining co-authors"
 license: MIT
+version: "0.1.0"
+# TODO: replace with the actual release date when the version above is tagged.
+date-released: "2026-09-08"
+# TODO: replace TODO-ORG with the real GitHub organisation/user before release.
 repository-code: "https://github.com/TODO-ORG/auto-experiment-platform"
+url: "https://github.com/TODO-ORG/auto-experiment-platform"
+keywords:
+  - laboratory automation
+  - materials synthesis
+  - robotics
+  - reproducibility
+  - metal-organic framework
 preferred-citation:
   type: article
   title: "Quantitative control and improved reproducibility of materials synthesis processes using an automated experimentation platform"
   journal: "Science and Technology of Advanced Materials: Methods"
   year: 2026
-  # TODO: add DOI, volume, and article number upon acceptance
+  # TODO: status is a placeholder - update to "published" (or remove) once the
+  # article is out, and add doi, volume, issue, start/end pages or article number.
+  status: submitted
+  # TODO: list all authors in paper order, with ORCID iDs.
   authors:
     - family-names: Hashimoto
       given-names: Yusuke
+      affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
+    - name: "TODO: remaining co-authors"

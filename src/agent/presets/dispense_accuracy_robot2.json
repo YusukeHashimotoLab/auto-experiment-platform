@@ -1,0 +1,28 @@
+{
+  "hidden": false,
+  "label": "分注精度テスト Robot2",
+  "description": "Robot 2で5mL分注を10回繰り返し、毎回電子天秤で分注量を測定する精度評価プリセット（MOF実験の高さ±160/±90mm・回転±90°を踏襲、回転方向はR2に合わせ反転）。各回の前に風袋引き（tare）するため、measure_weightの値がそのまま1回分の分注量（g）になる。実行後、ログに出力される10個の測定値から平均・標準偏差・CV%などを手動集計して分注誤差を評価する。",
+  "template": {
+    "name": "分注精度テスト Robot2",
+    "description": "Robot 2：ループ10回。各回 [風袋引き→ビーカーA位置へ下降(-160)→5mL吸引→上昇(160)→天秤上のビンへ回転(-90°)・下降(-90)→5mL排出→上昇(90)→元位置へ回転(+90°)→静定待機→重量測定]。tareを毎回行うので測定値=その回の分注量。10回分の重量ログから統計量を算出する。",
+    "steps": [
+      {"action": "loop_start", "loop_id": "r2_accuracy", "count": 10},
+
+      {"action": "tare_scale", "delay": 1.5},
+      {"action": "move_z", "robot_id": 2, "distance": -160},
+      {"action": "aspirate", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 160},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -90, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -90},
+      {"action": "dispense", "robot_id": 2, "volume": 5, "speed": 5},
+      {"action": "move_z", "robot_id": 2, "distance": 90},
+      {"action": "rotate_relative", "robot_id": 2, "angle": 90, "speed": "low"},
+      {"action": "wait", "robot_id": 2, "seconds": 2},
+      {"action": "measure_weight", "stabilization_count": 5},
+
+      {"action": "loop_end", "loop_id": "r2_accuracy"},
+
+      {"action": "go_home", "robot_id": 2}
+    ]
+  }
+}

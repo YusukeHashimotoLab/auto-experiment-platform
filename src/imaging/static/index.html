@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Photo Taker — Camera Control Panel</title>
+<style>
+  :root {
+    --panel: #1a1c1f;
+    --panel-raised: #212428;
+    --panel-inset: #121417;
+    --line: #33373d;
+    --amber: #ffb454;
+    --amber-dim: #8a6430;
+    --phosphor: #7fd88f;
+    --text: #c9cdd3;
+    --text-dim: #7d838c;
+    --danger: #e06c5a;
+    font-size: 15px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 30% -10%, #24272c 0%, transparent 60%),
+      #141619;
+    color: var(--text);
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+  .mono { font-family: "SF Mono", Menlo, "Osaka-Mono", monospace; }
+
+  header {
+    display: flex; align-items: baseline; gap: 1rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .8rem; margin-bottom: 1.2rem;
+  }
+  header h1 {
+    font-family: "Avenir Next Condensed", "Futura", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-weight: 600; font-size: 1.25rem; letter-spacing: .22em;
+    color: var(--amber); text-transform: uppercase;
+  }
+  header .sub { font-size: .75rem; letter-spacing: .5em; color: var(--text-dim); }
+  header .led {
+    margin-left: auto; display: flex; align-items: center; gap: .45rem;
+    font-size: .7rem; letter-spacing: .2em; color: var(--text-dim);
+  }
+  .led i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--phosphor);
+    box-shadow: 0 0 6px var(--phosphor);
+    animation: blink 2.4s ease-in-out infinite;
+  }
+  @keyframes blink { 50% { opacity: .45; box-shadow: none; } }
+
+  .deck { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1.2rem; }
+  @media (max-width: 900px) { .deck { grid-template-columns: 1fr; } }
+
+  /* ---- preview ---- */
+  .scope {
+    position: relative;
+    background: var(--panel-inset);
+    border: 1px solid var(--line);
+    padding: 14px;
+  }
+  .scope::before, .scope::after,
+  .scope .c3, .scope .c4 {
+    content: ""; position: absolute; width: 18px; height: 18px;
+    border: 2px solid var(--amber);
+  }
+  .scope::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+  .scope::after  { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
+  .scope .c3 { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
+  .scope .c4 { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+  .scope img { display: block; width: 100%; background: #000; }
+  .scope .readout {
+    position: absolute; left: 22px; bottom: 22px;
+    background: rgba(10,11,12,.72);
+    border: 1px solid rgba(255,180,84,.35);
+    color: var(--amber);
+    font-size: .72rem; letter-spacing: .08em;
+    padding: .35rem .6rem;
+    backdrop-filter: blur(2px);
+  }
+
+  /* ---- control rack ---- */
+  .rack { display: flex; flex-direction: column; gap: .9rem; }
+  .module {
+    background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+    border: 1px solid var(--line);
+    padding: .9rem 1rem 1rem;
+  }
+  .module .head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: .55rem;
+  }
+  .module .label {
+    font-size: .72rem; letter-spacing: .35em; color: var(--text-dim);
+  }
+  .module .value {
+    color: var(--amber); font-size: .95rem;
+    text-shadow: 0 0 8px rgba(255,180,84,.35);
+  }
+  .module .value small { color: var(--amber-dim); font-size: .7rem; margin-left: .3rem; }
+
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 26px; background: transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: repeating-linear-gradient(90deg,
+      var(--line) 0 2px, transparent 2px 10%) ,
+      linear-gradient(90deg, var(--amber-dim), var(--line));
+    background-blend-mode: screen;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 24px; margin-top: -10px;
+    background: linear-gradient(180deg, #3a3f46, #22262b);
+    border: 1px solid #565d66;
+    border-left: 5px solid var(--amber);
+    cursor: ew-resize;
+  }
+  input[type=range]:disabled::-webkit-slider-thumb { border-left-color: var(--text-dim); opacity: .4; }
+  input[type=range]:disabled { opacity: .5; }
+  .scale {
+    display: flex; justify-content: space-between;
+    font-size: .62rem; color: var(--text-dim); margin-top: .15rem;
+  }
+
+  .switchrow {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: .6rem; margin-top: .6rem; border-top: 1px dashed var(--line);
+    font-size: .72rem; letter-spacing: .2em; color: var(--text-dim);
+  }
+  .wbnote {
+    margin-top: .5rem; padding-top: .5rem; border-top: 1px dashed var(--line);
+    font-size: .62rem; line-height: 1.5; letter-spacing: .03em; color: var(--danger);
+  }
+  .toggle { position: relative; width: 44px; height: 20px; cursor: pointer; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle .tr {
+    position: absolute; inset: 0; background: var(--panel-inset);
+    border: 1px solid var(--line); transition: .15s;
+  }
+  .toggle .tr::before {
+    content: ""; position: absolute; width: 16px; height: 14px; top: 2px; left: 2px;
+    background: #4a5058; transition: .15s;
+  }
+  .toggle input:checked + .tr { border-color: var(--phosphor); }
+  .toggle input:checked + .tr::before {
+    left: 24px; background: var(--phosphor); box-shadow: 0 0 8px rgba(127,216,143,.5);
+  }
+
+  .shutter {
+    width: 100%; padding: .95rem;
+    font-family: inherit; font-size: 1rem; letter-spacing: .55em; text-indent: .55em;
+    color: #16130c; background: linear-gradient(180deg, #ffc36e, #e89a35);
+    border: 1px solid #ffd9a0; border-bottom: 3px solid #9a6a24;
+    cursor: pointer; font-weight: 700;
+  }
+  .shutter:active { transform: translateY(2px); border-bottom-width: 1px; }
+  .shutter:disabled { filter: grayscale(.8); opacity: .6; }
+
+  .specfield {
+    width: 100%; margin-bottom: .5rem;
+    background: var(--panel-inset); border: 1px solid var(--line);
+    color: var(--text); font-family: inherit; font-size: .85rem;
+    padding: .5rem .6rem; letter-spacing: .05em;
+  }
+  .specfield:focus { outline: none; border-color: var(--amber); }
+  .specfield::placeholder { color: var(--text-dim); }
+  .speclog {
+    display: none; margin-top: .6rem; padding: .5rem .6rem; max-height: 130px;
+    overflow-y: auto; background: var(--panel-inset); border: 1px solid var(--line);
+    color: var(--phosphor); font-size: .65rem; line-height: 1.5;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .speclog.show { display: block; }
+
+  /* ---- light adjustment ---- */
+  .btnrow { display: flex; gap: .5rem; }
+  .lbtn {
+    flex: 1; padding: .5rem .3rem;
+    font-family: inherit; font-size: .78rem; letter-spacing: .2em; text-indent: .2em;
+    color: var(--text); background: linear-gradient(180deg, #2b2f34, #1e2125);
+    border: 1px solid var(--line); border-bottom: 2px solid #0d0e10;
+    cursor: pointer;
+  }
+  .lbtn:active { transform: translateY(1px); border-bottom-width: 1px; }
+  .lbtn.on { color: var(--phosphor); border-color: var(--phosphor); }
+  .lbtn.seg.active {
+    color: var(--amber); border-color: var(--amber);
+    background: linear-gradient(180deg, #353028, #211d16);
+  }
+  .lightpanel { display: none; margin-top: .7rem; }
+  .lightpanel.show { display: block; }
+  .lightpanel .head { margin-top: .5rem; }
+  #light-hue::-webkit-slider-runnable-track {
+    height: 6px;
+    background: linear-gradient(90deg,
+      #f33 0%, #ff3 17%, #3f3 33%, #3ff 50%, #33f 67%, #f3f 83%, #f33 100%);
+  }
+  .lighthint {
+    margin-top: .6rem; font-size: .62rem; color: var(--text-dim);
+    letter-spacing: .05em; line-height: 1.5;
+  }
+
+  .lastshot { display: none; }
+  .lastshot.show { display: block; }
+  .lastshot img { width: 100%; display: block; border: 1px solid var(--line); }
+  .lastshot .fn {
+    font-size: .68rem; color: var(--phosphor); margin-top: .4rem;
+    letter-spacing: .05em; word-break: break-all;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%) translateY(80px);
+    background: var(--panel-raised); border: 1px solid var(--amber);
+    color: var(--amber); padding: .6rem 1.2rem; font-size: .8rem; letter-spacing: .15em;
+    transition: transform .25s ease; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ---- tabs ---- */
+  .tabbar {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem;
+  }
+  .tabbar .lbtn {
+    padding: .55rem .15rem; font-size: .72rem;
+    letter-spacing: .02em; text-indent: 0; white-space: nowrap;
+  }
+  .tabpanel { display: none; flex-direction: column; gap: .9rem; }
+  .tabpanel.active { display: flex; }
+
+  /* ---- condition presets ---- */
+  .cond-item {
+    border-top: 1px dashed var(--line); padding-top: .55rem; margin-top: .55rem;
+  }
+  .cond-item:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  .cond-item .name { color: var(--amber); font-size: .82rem; letter-spacing: .05em; }
+  .cond-item .meta {
+    color: var(--text-dim); font-size: .6rem; margin: .2rem 0 .5rem; line-height: 1.5;
+  }
+  .cond-item .diff {
+    display: none; margin-top: .4rem; color: var(--phosphor); font-size: .65rem;
+    line-height: 1.5; white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sample Photo Taker</h1>
+  <span class="sub">CAMERA CONTROL PANEL</span>
+  <span class="led mono"><i></i>C920 LIVE</span>
+</header>
+
+<div class="deck">
+  <div class="scope">
+    <span class="c3"></span><span class="c4"></span>
+    <img src="/stream" alt="Live preview">
+    <div class="readout mono" id="readout">EXP ---- / GAIN --- / FOC --- / WB ----K</div>
+  </div>
+
+  <div class="rack">
+    <div class="tabbar">
+      <button class="lbtn seg active" id="tab-btn-camera">Camera</button>
+      <button class="lbtn seg" id="tab-btn-light">Light</button>
+      <button class="lbtn seg" id="tab-btn-measure">Measure</button>
+      <button class="lbtn seg" id="tab-btn-analysis">Analysis</button>
+      <button class="lbtn seg" id="tab-btn-conditions">Conditions</button>
+    </div>
+
+    <!-- ==================== Camera ==================== -->
+    <div class="tabpanel active" id="tab-panel-camera">
+      <div class="module">
+        <div class="head">
+          <span class="label">Exposure</span>
+          <span class="value mono" id="exposure-val">----<small id="exposure-ms"></small></span>
+        </div>
+        <input type="range" id="exposure" min="3" max="2047" step="1">
+        <div class="scale mono"><span id="exposure-min">0.3ms</span><span id="exposure-max">204.7ms</span></div>
+        <div class="switchrow">
+          <span>Auto exposure</span>
+          <label class="toggle"><input type="checkbox" id="autoExposure"><span class="tr"></span></label>
+        </div>
+        <div class="lighthint">
+          Exposure changes are not reflected in the live view (they do take
+          effect in measurements, which always re-capture). Restart
+          camera_server.py to update the live view.
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="head">
+          <span class="label">Gain</span>
+          <span class="value mono" id="gain-val">---</span>
+        </div>
+        <input type="range" id="gain" min="0" max="255" step="1">
+        <div class="scale mono"><span id="gain-min">0</span><span id="gain-max">255</span></div>
+      </div>
+
+      <div class="module">
+        <div class="head">
+          <span class="label">Focus</span>
+          <span class="value mono" id="focus-val">---</span>
+        </div>
+        <input type="range" id="focus" min="0" max="250" step="1">
+        <div class="scale mono"><span>&#8734; far</span><span>near 0cm</span></div>
+        <div class="switchrow">
+          <span>Auto focus</span>
+          <label class="toggle"><input type="checkbox" id="autoFocus"><span class="tr"></span></label>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="head">
+          <span class="label">White balance (K)</span>
+          <span class="value mono" id="wb-val">----<small>K</small></span>
+        </div>
+        <input type="range" id="whiteBalance" min="2000" max="6500" step="1">
+        <div class="scale mono"><span id="whiteBalance-min">2000K</span><span id="whiteBalance-max">6500K</span></div>
+        <div class="switchrow">
+          <span>Auto WB</span>
+          <label class="toggle"><input type="checkbox" id="autoWhiteBalance"><span class="tr"></span></label>
+        </div>
+        <div class="wbnote">&#9888; Keep this manual at 4600K during measurement (hard rule). Switching back to auto breaks color reproduction.</div>
+      </div>
+
+      <button class="shutter" id="capture">Capture</button>
+
+      <div class="module lastshot" id="lastshot">
+        <div class="head"><span class="label">Last capture</span></div>
+        <img id="last-img" alt="">
+        <div class="fn mono" id="last-name"></div>
+      </div>
+    </div>
+
+    <!-- ==================== Light ==================== -->
+    <div class="tabpanel" id="tab-panel-light">
+      <div class="module">
+        <div class="head">
+          <span class="label">Light control</span>
+          <span class="value mono" id="light-state">--</span>
+        </div>
+        <div class="btnrow">
+          <button class="lbtn" id="light-on">On</button>
+          <button class="lbtn" id="light-off">Off</button>
+        </div>
+        <div class="btnrow" style="margin-top:.5rem">
+          <button class="lbtn seg active" id="light-mode-cct">White</button>
+          <button class="lbtn seg" id="light-mode-hsi">Monochrome</button>
+        </div>
+
+        <div class="lightpanel show" id="panel-cct">
+          <div class="head">
+            <span class="label">Brightness</span>
+            <span class="value mono" id="cct-brt-val">50<small>%</small></span>
+          </div>
+          <input type="range" id="cct-brt" min="0" max="100" step="1" value="50">
+          <div class="head">
+            <span class="label">Color temp</span>
+            <span class="value mono" id="cct-k-val">5600<small>K</small></span>
+          </div>
+          <input type="range" id="cct-k" min="2500" max="8500" step="100" value="5600">
+          <div class="scale mono"><span>2500K warm</span><span>cool 8500K</span></div>
+        </div>
+
+        <div class="lightpanel" id="panel-hsi">
+          <div class="head">
+            <span class="label">Hue</span>
+            <span class="value mono" id="hsi-hue-val">0<small>&deg;</small></span>
+          </div>
+          <input type="range" id="light-hue" min="0" max="360" step="1" value="0">
+          <div class="head">
+            <span class="label">Saturation</span>
+            <span class="value mono" id="hsi-sat-val">100<small>%</small></span>
+          </div>
+          <input type="range" id="hsi-sat" min="0" max="100" step="1" value="100">
+          <div class="head">
+            <span class="label">Brightness</span>
+            <span class="value mono" id="hsi-brt-val">50<small>%</small></span>
+          </div>
+          <input type="range" id="hsi-brt" min="0" max="100" step="1" value="50">
+          <div class="btnrow" style="margin-top:.6rem">
+            <button class="lbtn" data-hue="0">Red 625</button>
+            <button class="lbtn" data-hue="120">Green 525</button>
+            <button class="lbtn" data-hue="240">Blue 465</button>
+          </div>
+        </div>
+        <div class="lighthint">
+          The light cannot be controlled while a measurement is running.
+          Turn it off when you are done adjusting (measurements turn it
+          on/off automatically).
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Measure ==================== -->
+    <div class="tabpanel" id="tab-panel-measure">
+      <div class="module">
+        <div class="head">
+          <span class="label">Spot measurement</span>
+          <span class="value mono" id="spec-state">Idle</span>
+        </div>
+        <div class="btnrow" style="margin-bottom:.5rem">
+          <button class="lbtn seg active" id="spec-mode-full">Full (white+RGB)</button>
+          <button class="lbtn seg" id="spec-mode-white">White only</button>
+        </div>
+        <input type="text" class="specfield" id="spec-folder"
+               placeholder="Save folder name (e.g., experimentA)">
+        <input type="text" class="specfield" id="spec-name"
+               placeholder="Data name (e.g., vial1)">
+        <button class="shutter" id="spec-run">Start measurement</button>
+        <pre class="speclog mono" id="spec-log"></pre>
+
+        <div class="switchrow">
+          <span>Measure with locked frame</span>
+          <label class="toggle"><input type="checkbox" id="spec-locked"><span class="tr"></span></label>
+        </div>
+        <div class="lighthint">
+          Frame calibration is available from the Conditions tab.
+        </div>
+        <div class="switchrow" id="spec-fixed-row">
+          <span>Fixed light intensity (for comparison)</span>
+          <label class="toggle"><input type="checkbox" id="spec-fixed"><span class="tr"></span></label>
+        </div>
+        <div class="lighthint" id="spec-fixed-hint">
+          Locks the LED intensity to its initial value (1%) and disables
+          auto-adjustment. For absolute comparison between samples. Turbid
+          samples may come out dark.
+        </div>
+        <div class="switchrow" id="spec-white-row" style="display:none">
+          <span>White light intensity (white-only mode)</span>
+          <input type="number" class="specfield" id="spec-white-pct"
+                 min="1" max="100" value="20" style="width:5em">
+        </div>
+        <div class="lighthint" id="spec-white-hint" style="display:none">
+          In white-only mode, every sample is shot at the same light
+          intensity. Fix this value when comparing photos side by side or
+          comparing absolute transmission. Adjust it if turbid samples come
+          out too dark or clear samples blow out. Leave it blank to fall
+          back to automatic adjustment.
+        </div>
+      </div>
+
+      <div class="module lastshot" id="specshot">
+        <div class="head"><span class="label">Measurement result</span></div>
+        <img id="spec-img" alt="">
+        <div class="fn mono" id="spec-path"></div>
+      </div>
+    </div>
+
+    <!-- ==================== Analysis ==================== -->
+    <div class="tabpanel" id="tab-panel-analysis">
+      <div class="module">
+        <div class="head">
+          <span class="label">Analysis</span>
+          <button class="lbtn" id="an-refresh" style="flex:none;padding:.35rem .7rem">Refresh</button>
+        </div>
+      </div>
+
+      <div class="module lastshot" id="an-latest-run">
+        <div class="head"><span class="label">Latest run's spectral.png</span></div>
+        <img id="an-latest-img" alt="">
+        <div class="fn mono" id="an-latest-name"></div>
+      </div>
+    </div>
+
+    <!-- ==================== Conditions ==================== -->
+    <div class="tabpanel" id="tab-panel-conditions">
+      <div class="module">
+        <div class="head"><span class="label">Frame calibration</span></div>
+        <div class="lighthint" id="geo-status">Frame lock: not set</div>
+        <button class="lbtn" id="geo-calib" style="width:100%;margin-top:.4rem">
+          Calibrate with current frame
+        </button>
+        <div class="lighthint">
+          When swapping samples for comparison, calibrating once and
+          measuring every sample at the same frame makes them comparable.
+          Repeated measurements of a single sample can stay on
+          auto-detection (this setting doesn't apply to them).
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="head"><span class="label">Measurement condition presets</span></div>
+        <div class="lighthint mono" id="cond-current">Current: --</div>
+        <input type="text" class="specfield" id="cond-name" placeholder="Preset name (e.g., standardA)">
+        <div class="switchrow">
+          <span>Include light</span>
+          <label class="toggle"><input type="checkbox" id="cond-include-light"><span class="tr"></span></label>
+        </div>
+        <div class="switchrow">
+          <span>Include frame</span>
+          <label class="toggle"><input type="checkbox" id="cond-include-geo"><span class="tr"></span></label>
+        </div>
+        <button class="lbtn" id="cond-save" style="width:100%;margin-top:.5rem">Save this condition</button>
+        <div class="lighthint" id="cond-list-empty" style="margin-top:.6rem">No saved presets</div>
+        <div id="cond-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast mono" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const SLIDERS = ["exposure", "gain", "focus", "whiteBalance"];
+
+function fmtMs(v) {
+  // Windows (DirectShow) exposure is on a log2-seconds scale (negative, 0
+  // is the ceiling = 1000ms). macOS (uvc-util) is a positive value in
+  // 100us units. The sign of the value tells them apart automatically.
+  if (v <= 0) return (Math.pow(2, v) * 1000).toFixed(1) + "ms";
+  return (v / 10).toFixed(1) + "ms";
+}
+
+function paint() {
+  $("exposure-ms").textContent = fmtMs(+$("exposure").value);
+  $("exposure-val").firstChild.textContent = $("exposure").value;
+  $("gain-val").textContent = $("gain").value;
+  $("focus-val").textContent = $("focus").value;
+  $("wb-val").firstChild.textContent = $("whiteBalance").value;
+  $("readout").textContent =
+    `EXP ${fmtMs(+$("exposure").value)} / GAIN ${$("gain").value} / FOC ${$("focus").value} / WB ${$("whiteBalance").value}K` +
+    ($("autoExposure").checked ? " / AE" : "") + ($("autoFocus").checked ? " / AF" : "") +
+    ($("autoWhiteBalance").checked ? " / AWB" : "");
+  $("exposure").disabled = $("autoExposure").checked;
+  $("focus").disabled = $("autoFocus").checked;
+  $("whiteBalance").disabled = $("autoWhiteBalance").checked;
+}
+
+function updateScaleLabels(s) {
+  // Reflect the min/max returned by the API in the scale labels too
+  // (exposure is converted to ms, the others use the raw value).
+  if (s.exposure) {
+    if (s.exposure.min != null) $("exposure-min").textContent = fmtMs(+s.exposure.min);
+    if (s.exposure.max != null) $("exposure-max").textContent = fmtMs(+s.exposure.max);
+  }
+  if (s.gain) {
+    if (s.gain.min != null) $("gain-min").textContent = s.gain.min;
+    if (s.gain.max != null) $("gain-max").textContent = s.gain.max;
+  }
+  if (s.whiteBalance) {
+    if (s.whiteBalance.min != null) $("whiteBalance-min").textContent = s.whiteBalance.min + "K";
+    if (s.whiteBalance.max != null) $("whiteBalance-max").textContent = s.whiteBalance.max + "K";
+  }
+}
+
+async function post(name, value) {
+  await fetch("/api/control", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({name, value})
+  });
+}
+
+async function refresh() {
+  const s = await (await fetch("/api/controls")).json();
+  for (const k of SLIDERS) {
+    if (!s[k]) continue;
+    if (s[k].min != null) $(k).min = s[k].min;
+    if (s[k].max != null) $(k).max = s[k].max;
+    if (s[k].value != null) $(k).value = s[k].value;
+  }
+  if (s.autoExposure != null) $("autoExposure").checked = s.autoExposure;
+  if (s.autoFocus != null) $("autoFocus").checked = s.autoFocus;
+  if (s.autoWhiteBalance != null) $("autoWhiteBalance").checked = s.autoWhiteBalance;
+  updateScaleLabels(s);
+  paint();
+}
+
+let timers = {};
+for (const k of SLIDERS) {
+  $(k).addEventListener("input", () => {
+    paint();
+    clearTimeout(timers[k]);
+    timers[k] = setTimeout(() => post(k, +$(k).value), 120);
+  });
+}
+
+$("autoExposure").addEventListener("change", async e => {
+  await post("autoExposure", e.target.checked);
+  paint();
+  if (!e.target.checked) setTimeout(refresh, 400); // re-read the current value after switching back to manual
+});
+$("autoFocus").addEventListener("change", async e => {
+  await post("autoFocus", e.target.checked);
+  paint();
+  if (!e.target.checked) setTimeout(refresh, 400);
+});
+$("autoWhiteBalance").addEventListener("change", async e => {
+  await post("autoWhiteBalance", e.target.checked);
+  paint();
+  if (!e.target.checked) setTimeout(refresh, 400); // re-read the current value after switching back to manual
+});
+
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+$("capture").addEventListener("click", async () => {
+  $("capture").disabled = true;
+  try {
+    const r = await (await fetch("/api/capture", {method: "POST"})).json();
+    if (r.ok) {
+      $("lastshot").classList.add("show");
+      $("last-img").src = "/photos/" + r.file + "?t=" + Date.now();
+      $("last-name").textContent = "photos/" + r.file;
+      toast("Saved: " + r.file);
+    } else {
+      toast("Capture failed");
+    }
+  } finally {
+    $("capture").disabled = false;
+  }
+});
+
+// ---- tab switching ----
+const TABS = ["camera", "light", "measure", "analysis", "conditions"];
+function setTab(tab) {
+  for (const t of TABS) {
+    $("tab-btn-" + t).classList.toggle("active", t === tab);
+    $("tab-panel-" + t).classList.toggle("active", t === tab);
+  }
+  if (tab === "analysis") refreshAnalysis();
+  if (tab === "conditions") { refreshConditions(); refreshGeometry(); }
+}
+for (const t of TABS) {
+  $("tab-btn-" + t).addEventListener("click", () => setTab(t));
+}
+
+// ---- light adjustment ----
+// A BLE command takes 1-2 seconds each, so while one is in flight only the
+// most recent pending change is kept and sent once it completes
+// (intermediate values are dropped).
+let lightBusy = false, lightPending = null;
+
+async function lightSend(payload) {
+  if (lightBusy) { lightPending = payload; return; }
+  lightBusy = true;
+  $("light-state").textContent = "Sending";
+  try {
+    const res = await fetch("/api/light", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+    const r = await res.json();
+    if (!res.ok) {
+      toast(r.error || "Light control failed");
+      $("light-state").textContent = "Error";
+    } else {
+      $("light-state").textContent =
+        payload.action === "off" ? "Off" :
+        payload.action === "on" ? "On" :
+        payload.action === "cct" ? `${payload.brightness}% ${payload.kelvin}K` :
+        `${payload.hue}° ${payload.brightness}%`;
+    }
+  } catch {
+    toast("Communication error");
+    $("light-state").textContent = "Error";
+  } finally {
+    lightBusy = false;
+    if (lightPending) { const p = lightPending; lightPending = null; lightSend(p); }
+  }
+}
+
+function cctPayload() {
+  return {action: "cct", brightness: +$("cct-brt").value, kelvin: +$("cct-k").value};
+}
+function hsiPayload() {
+  return {action: "hsi", hue: +$("light-hue").value,
+          sat: +$("hsi-sat").value, brightness: +$("hsi-brt").value};
+}
+function paintLight() {
+  $("cct-brt-val").firstChild.textContent = $("cct-brt").value;
+  $("cct-k-val").firstChild.textContent = $("cct-k").value;
+  $("hsi-hue-val").firstChild.textContent = $("light-hue").value;
+  $("hsi-sat-val").firstChild.textContent = $("hsi-sat").value;
+  $("hsi-brt-val").firstChild.textContent = $("hsi-brt").value;
+}
+
+let lightTimer = null;
+function bindLightSlider(id, payloadFn) {
+  $(id).addEventListener("input", () => {
+    paintLight();
+    clearTimeout(lightTimer);
+    lightTimer = setTimeout(() => lightSend(payloadFn()), 300);
+  });
+}
+bindLightSlider("cct-brt", cctPayload);
+bindLightSlider("cct-k", cctPayload);
+bindLightSlider("light-hue", hsiPayload);
+bindLightSlider("hsi-sat", hsiPayload);
+bindLightSlider("hsi-brt", hsiPayload);
+
+$("light-on").addEventListener("click", () => lightSend({action: "on"}));
+$("light-off").addEventListener("click", () => lightSend({action: "off"}));
+
+// Kept so the Conditions tab knows which light panel is active when saving.
+let currentLightMode = "cct";
+
+$("light-mode-cct").addEventListener("click", () => setLightMode("cct"));
+$("light-mode-hsi").addEventListener("click", () => setLightMode("hsi"));
+function setLightMode(mode) {
+  currentLightMode = mode;
+  $("light-mode-cct").classList.toggle("active", mode === "cct");
+  $("light-mode-hsi").classList.toggle("active", mode === "hsi");
+  $("panel-cct").classList.toggle("show", mode === "cct");
+  $("panel-hsi").classList.toggle("show", mode === "hsi");
+}
+
+for (const b of document.querySelectorAll("[data-hue]")) {
+  b.addEventListener("click", () => {
+    $("light-hue").value = b.dataset.hue;
+    $("hsi-sat").value = 100;
+    paintLight();
+    lightSend(hsiPayload());
+  });
+}
+paintLight();
+
+// ---- spot measurement (named; full = 3 wavelengths / white-only = quick) ----
+let specTimer = null;
+let specMode = "full";
+let specKind = "measure";   // measure | calibrate
+
+$("spec-mode-full").addEventListener("click", () => setSpecMode("full"));
+$("spec-mode-white").addEventListener("click", () => setSpecMode("white"));
+function setSpecMode(mode) {
+  specMode = mode;
+  $("spec-mode-full").classList.toggle("active", mode === "full");
+  $("spec-mode-white").classList.toggle("active", mode === "white");
+  // Fixing the white light intensity only applies to white-only mode (the
+  // white shot in full mode is only used for geometry detection and does
+  // not affect OD, so it's unused here).
+  $("spec-white-row").style.display = mode === "white" ? "flex" : "none";
+  $("spec-white-hint").style.display = mode === "white" ? "block" : "none";
+  // Fixed light intensity (monochrome light) is meaningless in white-only
+  // mode since there's no such shot there, so hide it.
+  $("spec-fixed-row").style.display = mode === "white" ? "none" : "flex";
+  $("spec-fixed-hint").style.display = mode === "white" ? "none" : "block";
+}
+
+// ---- locked frame (calibration; the UI lives on the Conditions tab) ----
+async function refreshGeometry() {
+  let g;
+  try { g = await (await fetch("/api/geometry")).json(); } catch { return; }
+  if (g.locked) {
+    $("geo-status").textContent =
+      `Frame lock: meniscus_y=${g.meniscus_y} body_x=${g.body_x0}-${g.body_x1} ` +
+      `liquid_bottom_y=${g.liquid_bottom_y} (${g.calibrated_at || ""})`;
+  } else {
+    $("geo-status").textContent = "Frame lock: not set" +
+      (g.error ? " (" + g.error + ")" : "");
+    $("spec-locked").checked = false;
+  }
+}
+
+$("geo-calib").addEventListener("click", async () => {
+  let res, r;
+  try {
+    res = await fetch("/api/geometry/calibrate", {method: "POST"});
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok) { toast(r.error || "Could not start calibration"); return; }
+  specKind = "calibrate";
+  $("specshot").classList.remove("show");
+  $("spec-state").textContent = "Detecting frame";
+  specWatch();
+});
+
+function encodePath(p) {
+  return p.split("/").map(encodeURIComponent).join("/");
+}
+
+function specWatch() {
+  $("spec-run").disabled = true;
+  $("spec-state").textContent = "Measuring";
+  $("spec-log").classList.add("show");
+  clearInterval(specTimer);
+  specTimer = setInterval(specPoll, 2000);
+}
+
+async function specPoll() {
+  let s;
+  try {
+    s = await (await fetch("/api/spectral/status")).json();
+  } catch { return; }
+  $("spec-log").textContent = (s.output_tail || []).join("\n");
+  $("spec-log").scrollTop = $("spec-log").scrollHeight;
+  if (s.running) return;
+  clearInterval(specTimer);
+  $("spec-run").disabled = false;
+  if (specKind === "calibrate") {
+    if (s.exit_code === 0) {
+      $("spec-state").textContent = "Frame locked";
+      toast("Calibrated the frame");
+      refreshGeometry();
+    } else {
+      $("spec-state").textContent = "Failed";
+      toast("Calibration failed (check the log)");
+    }
+    specKind = "measure";
+    return;
+  }
+  if (s.exit_code === 0 && s.result_dir) {
+    $("spec-state").textContent = "Done";
+    $("specshot").classList.add("show");
+    const rel = s.result_dir.replace(/^photos\//, "");
+    $("spec-img").src = "/photos/" + encodePath(rel) + "/spectral.png?t=" + Date.now();
+    $("spec-path").textContent = s.result_dir;
+    toast("Measurement complete: " + s.result_dir);
+  } else {
+    $("spec-state").textContent = "Failed";
+    toast("Measurement failed (check the log)");
+  }
+}
+
+$("spec-run").addEventListener("click", async () => {
+  const folder = $("spec-folder").value.trim();
+  const name = $("spec-name").value.trim();
+  if (!folder || !name) {
+    toast("Enter a folder name and a data name");
+    return;
+  }
+  const whiteIntensity = specMode === "white"
+    ? (parseInt($("spec-white-pct").value, 10) || null) : null;
+  let res, r;
+  try {
+    res = await fetch("/api/spectral", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({folder, name, mode: specMode,
+                            locked: $("spec-locked").checked,
+                            fixed: $("spec-fixed").checked,
+                            white_intensity: whiteIntensity})
+    });
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok) {
+    toast(r.error || "Could not start");
+    return;
+  }
+  specKind = "measure";
+  $("specshot").classList.remove("show");
+  specWatch();
+});
+
+// Resume tracking on page reload if a measurement is already running.
+(async () => {
+  try {
+    const s = await (await fetch("/api/spectral/status")).json();
+    if (s.running) specWatch();
+  } catch {}
+})();
+
+// ---- analysis ----
+async function refreshAnalysis() {
+  let a;
+  try { a = await (await fetch("/api/analysis")).json(); } catch { toast("Failed to fetch analysis info"); return; }
+  const recent = a.recent_runs || [];
+  if (recent.length) {
+    const run = recent[0];
+    $("an-latest-run").classList.add("show");
+    $("an-latest-img").src = "/analysis/" + encodePath(run.name) + "/spectral.png?t=" + Date.now();
+    $("an-latest-name").textContent = `${run.name} (${run.captured_at || ""})`;
+  } else {
+    $("an-latest-run").classList.remove("show");
+  }
+}
+$("an-refresh").addEventListener("click", refreshAnalysis);
+
+// ---- condition presets ----
+function valOr(v) { return v == null ? "--" : v; }
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+async function refreshConditions() {
+  let c;
+  try { c = await (await fetch("/api/conditions")).json(); } catch { toast("Failed to fetch the condition list"); return; }
+  const cam = (c.current && c.current.camera) || {};
+  $("cond-current").textContent =
+    `Current: EXP=${valOr(cam.exposure)} GAIN=${valOr(cam.gain)} FOC=${valOr(cam.focus)} WB=${valOr(cam.wb)}` +
+    ` / frame lock=${c.current && c.current.geometry_locked ? "set" : "not set"}`;
+  renderConditionList(c.presets || []);
+}
+
+function renderConditionList(presets) {
+  const wrap = $("cond-list");
+  wrap.innerHTML = "";
+  $("cond-list-empty").style.display = presets.length ? "none" : "block";
+  for (const p of presets) {
+    const cam = p.camera || {};
+    const item = document.createElement("div");
+    item.className = "cond-item";
+    item.innerHTML =
+      `<div class="name mono">${escapeHtml(p.name)}</div>` +
+      `<div class="meta mono">${escapeHtml(p.saved_at || "")} / ` +
+      `EXP=${valOr(cam.exposure)} GAIN=${valOr(cam.gain)} FOC=${valOr(cam.focus)} WB=${valOr(cam.wb)}` +
+      `${p.has_light ? " / light" : ""}${p.has_geometry ? " / frame" : ""}</div>` +
+      `<div class="btnrow">` +
+      `<button class="lbtn cond-apply">Apply</button>` +
+      `<button class="lbtn cond-verify">Verify</button>` +
+      `<button class="lbtn cond-delete">Delete</button>` +
+      `</div>` +
+      `<div class="diff mono"></div>`;
+    item.querySelector(".cond-apply").addEventListener("click", () => applyCondition(p.name));
+    item.querySelector(".cond-verify").addEventListener("click", () =>
+      verifyCondition(p.name, item.querySelector(".diff")));
+    item.querySelector(".cond-delete").addEventListener("click", () => deleteCondition(p.name));
+    wrap.appendChild(item);
+  }
+}
+
+$("cond-save").addEventListener("click", async () => {
+  const name = $("cond-name").value.trim();
+  if (!name) { toast("Enter a preset name"); return; }
+  const light = $("cond-include-light").checked
+    ? (currentLightMode === "cct" ? cctPayload() : hsiPayload())
+    : null;
+  let res, r;
+  try {
+    res = await fetch("/api/conditions/save", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name, light, include_geometry: $("cond-include-geo").checked})
+    });
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok) { toast(r.error || "Save failed"); return; }
+  toast("Condition saved: " + name);
+  $("cond-name").value = "";
+  refreshConditions();
+});
+
+async function applyCondition(name) {
+  let res, r;
+  try {
+    res = await fetch("/api/conditions/apply", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name})
+    });
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok || r.ok === false) { toast(r.error || "Apply failed"); return; }
+  toast(r.note || ("Condition applied: " + name));
+  refreshConditions();
+  refreshGeometry();
+  refresh();
+}
+
+async function verifyCondition(name, diffEl) {
+  let res, r;
+  try {
+    res = await fetch("/api/conditions/verify", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name})
+    });
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok) { toast(r.error || "Verification failed"); return; }
+  diffEl.style.display = "block";
+  if (r.match) {
+    diffEl.textContent = "Matches";
+  } else {
+    diffEl.textContent = (r.diff || [])
+      .map(d => `${d.key}: saved=${d.saved} current=${d.current}`).join("\n") || "No differences";
+  }
+}
+
+async function deleteCondition(name) {
+  if (!confirm(`Delete preset "${name}"?`)) return;
+  let res, r;
+  try {
+    res = await fetch("/api/conditions/delete", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name})
+    });
+    r = await res.json();
+  } catch { toast("Communication error"); return; }
+  if (!res.ok) { toast(r.error || "Delete failed"); return; }
+  toast("Deleted: " + name);
+  refreshConditions();
+}
+
+refreshGeometry();
+refresh();
+</script>
+</body>
+</html>

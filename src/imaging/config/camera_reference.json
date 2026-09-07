@@ -1,0 +1,21 @@
+{
+  "_comment": "Single source of truth for the reference camera settings. Used by the camera-recovery procedure and by camera_server.py's /api/health. Exposure depends on the sample: a clear supernatant sample uses 20 (from 2026-07-13) / a uniformly turbid sample uses 156 (older baseline). 'reference' is for macOS (uvc-util names; the key names must not change because the recovery script reads them directly). 'win32' is for Windows (hw.py logical names: auto_exposure/exposure/gain/auto_focus/focus/auto_wb/wb_temp). Left null until calibrated on real Windows hardware (in that case camera_server.py treats matches_reference as None = cannot determine).",
+  "reference": {
+    "auto-exposure-mode": 1,
+    "exposure-time-abs": 20,
+    "gain": 0,
+    "auto-focus": 0,
+    "focus-abs": 180,
+    "auto-white-balance-temp": 0,
+    "white-balance-temp": 4600
+  },
+  "win32": {
+    "auto_exposure": null,
+    "exposure": -9,
+    "gain": 0,
+    "auto_focus": false,
+    "focus": 180,
+    "auto_wb": false,
+    "wb_temp": 4600
+  }
+}

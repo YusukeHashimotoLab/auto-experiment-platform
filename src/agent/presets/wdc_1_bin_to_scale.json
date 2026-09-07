@@ -1,0 +1,21 @@
+{
+  "hidden": true,
+  "label": "秤量分注①　ビン→天秤→戻り",
+  "description": "Robot 3でビンを拾い、天秤まで移動して載せた後、逆順で元の位置に戻る。位置調整用。",
+  "template": {
+    "name": "ビン→天秤→元の位置へ戻る",
+    "description": "Robot 3でビンを拾い上げ、天秤位置まで回転・移動して降ろした後、逆の動作で元の位置に戻る。",
+    "steps": [
+      {"action": "move_radial", "robot_id": 3, "distance": 45},
+      {"action": "move_z", "robot_id": 3, "distance": 140},
+      {"action": "rotate_relative", "robot_id": 3, "angle": 90, "speed": "low"},
+      {"action": "move_radial", "robot_id": 3, "distance": 40},
+      {"action": "move_z", "robot_id": 3, "distance": -50},
+      {"action": "move_z", "robot_id": 3, "distance": 50},
+      {"action": "move_radial", "robot_id": 3, "distance": -40},
+      {"action": "rotate_relative", "robot_id": 3, "angle": -90, "speed": "low"},
+      {"action": "move_z", "robot_id": 3, "distance": -140},
+      {"action": "move_radial", "robot_id": 3, "distance": -45}
+    ]
+  }
+}

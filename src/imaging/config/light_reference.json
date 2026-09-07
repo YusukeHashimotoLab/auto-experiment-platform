@@ -1,0 +1,12 @@
+{
+  "_comment": "Documentation of the reference illumination conditions used for spectral acquisition, transcribed from the hard-coded constants in acquire.py (originally the constants block near the top of acquire.py). acquire.py keeps its own constants at runtime; this file does not configure it and is not read by any module -- it is a human-readable record of those values for anyone porting or re-deriving the setup. white_balance_k is the camera's fixed manual white balance (must never be switched back to auto -- see README.md). white_reference describes the white-light shot used for geometry detection (CCT mode). white_fixed_default_pct is the suggested default brightness for a fixed-intensity white-only measurement. led_settle_s is the settle time after any light setting change, before capturing. Each entry in 'colours' is one single-colour (HSI) shot: hsi_hue/hsi_saturation/intensity_pct are the light settings sent to the NEEWER light; nominal_wavelength_nm is the nominal (not measured, +/-10-15 nm) wavelength of that LED; dominant_channel is the camera color channel that this LED saturates even at low intensity; photometry_channel is the secondary channel actually used for photometry because the dominant channel saturates by design.",
+  "white_balance_k": 4600,
+  "white_reference": {"mode": "cct", "brightness_pct": 1, "cct_k": 5600},
+  "white_fixed_default_pct": 20,
+  "led_settle_s": 1.8,
+  "colours": [
+    {"name": "red",   "hsi_hue": 0,   "hsi_saturation": 100, "intensity_pct": 1, "nominal_wavelength_nm": 625, "dominant_channel": "R", "photometry_channel": "G"},
+    {"name": "green", "hsi_hue": 120, "hsi_saturation": 100, "intensity_pct": 1, "nominal_wavelength_nm": 525, "dominant_channel": "G", "photometry_channel": "B"},
+    {"name": "blue",  "hsi_hue": 240, "hsi_saturation": 100, "intensity_pct": 1, "nominal_wavelength_nm": 465, "dominant_channel": "B", "photometry_channel": "G"}
+  ]
+}

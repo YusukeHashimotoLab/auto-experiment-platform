@@ -22,28 +22,80 @@ the solution dispensing speed was quantified and reproduced.
 
 | Path | Contents |
 |---|---|
-| `src/agent/` | AI agent that generates device control code and JSON experimental flows (Gemini API) |
-| `src/devices/` | Control drivers for each instrument (robot arm, electric pipette, hot-plate stirrer, electronic balance) |
-| `src/flow/` | Executor and validator for the JSON experimental flow format |
+| `src/agent/` | AI agent that generates JSON experimental flows from natural language (Gemini API or any OpenAI-compatible endpoint) and the preset flows |
+| `src/devices/` | Control drivers for each instrument (robot arm, electric pipette, hot-plate stirrer, electronic balance, webcam) and the safety wrapper the flows run through |
+| `src/flow/` | Schema, validator, executor and command-line runner for the JSON experimental flow format |
 | `src/gui/` | Browser-based GUI for parameter input and flow confirmation |
 | `src/voice/` | Voice input (whisper-large-v3-turbo) |
 | `src/monitoring/` | IoT sensor logging (Raspberry Pi + Environment Sensor HAT) and process cameras |
+| `src/imaging/` | Appearance-imaging system: NEEWER RGB62 light + Logitech C920n camera control, white/red/green/blue capture sequence, cropped-image comparison and depth-direction transmitted-light profiles (paper Figure 6) |
 | `detection/` | Object detection based on YOLOv8 — **kept separate for licensing reasons, see below** |
 | `cad/` | CAD design bank of 3D-printable experimental components (F3D / STEP / STL) |
-| `docs/` | Bill of materials, setup guide, experimental-flow format reference |
+| `docs/` | Bill of materials, setup guide, experimental-flow format reference, spreadsheet-input guide |
 | `examples/zif8/` | Sample experimental flows and process logs from the ZIF-8 demonstration |
 
 ## Getting started
 
 1. See [`docs/bom.md`](docs/bom.md) for the full list of hardware used.
 2. Print the fixtures in `cad/` (STL files; F3D/STEP included for modification).
+   **Status:** the four component directories are still empty — the model files are
+   being collected for release; see [`cad/README.md`](cad/README.md).
 3. Follow [`docs/setup.md`](docs/setup.md) to connect the instruments to the control PC.
-4. Copy `.env.example` to `.env` and set your own API keys. **Never commit `.env`.**
-5. <!-- TODO: install / run instructions once code is imported -->
+4. Copy `config.example.yaml` to `config.yaml` and set the COM ports and workspace
+   limits of your own cell; copy `.env.example` to `.env` and set your API keys.
+   **Never commit `.env` or `config.yaml`.**
+5. Install the Python dependencies: `pip install -r requirements.txt`
+   (module-specific notes, e.g. for the imaging system, are in each `src/<module>/README.md`).
+   Check the installation with `pytest tests/` — the suite needs no hardware.
+6. Dry-run a flow without hardware, then run it for real. The ZIF-8 examples are the
+   JSON equivalents of the spreadsheet sequence in step 7, which is the path the
+   paper's batches were actually run with:
+
+   ```bash
+   python -m src.flow.run_flow examples/zif8/zif8_two_solution_mixing_speed5.json --mock
+   python -m src.flow.run_flow examples/zif8/zif8_two_solution_mixing_speed5.json
+   ```
+
+   Every move is checked against the `workspace` limits in `config.yaml` before the
+   robot is commanded — in `--mock` mode too. Ctrl+C is an emergency stop: the arm
+   halts where it is rather than driving home. Each run leaves
+   `logs/<date>/<flow>_<time>/` with `run.log`, `measurements.csv`, `summary.md`,
+   `metadata.json` and a copy of the flow; add `--no-record` to skip the sensor-CSV
+   and video recording that real runs start by default.
+
+7. Or set the parameters in a spreadsheet — **this is the path used for the paper's
+   ZIF-8 experiments**: the two-solution mixing experiment runs from a
+   `parameter,value,note` CSV, with no JSON at all:
+
+   ```bash
+   cp src/flow/csv_runner/control.example.csv src/flow/csv_runner/control.csv
+   python -m src.flow.csv_runner.run_csv --mock   # then without --mock for a real run
+   ```
+
+   The sheet is range-checked before any device is opened, the generated steps go
+   through the same schema and workspace validator as a JSON flow, and the run leaves
+   the same log folder; see [`docs/csv-runner.md`](docs/csv-runner.md).
+
+8. Or use the GUI, where flows can also be generated from natural language or voice
+   (the reported ZIF-8 batches did not use this path):
+
+   ```bash
+   streamlit run src/gui/app.py
+   ```
+
+   Ports come from `config.yaml` and stay editable in the sidebar; the flow is
+   validated against the same schema before any device is opened, *Mock* runs it
+   end to end without hardware, *Stop* aborts through the same emergency-stop path
+   as Ctrl+C, and the run leaves the same `logs/<date>/…` folder as the CLI.
+
+The flow format is described in [`docs/experimental-flow.md`](docs/experimental-flow.md),
+the spreadsheet input in [`docs/csv-runner.md`](docs/csv-runner.md); the ZIF-8 flows —
+JSON equivalents of the spreadsheet sequence the paper's batches were run with — are in
+[`examples/zif8/`](examples/zif8/).
 
 ## Licensing
 
-- **Code** (`src/`, `examples/`): MIT License — see [`LICENSE`](LICENSE).
+- **Code** (`src/`, `examples/`): MIT License — see [`LICENSE`](LICENSE). Third-party components are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 - **CAD models and documentation** (`cad/`, `docs/`): Creative Commons Attribution 4.0
   (CC BY 4.0) — see [`cad/README.md`](cad/README.md).
 - **Object detection** (`detection/`): depends on [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics),

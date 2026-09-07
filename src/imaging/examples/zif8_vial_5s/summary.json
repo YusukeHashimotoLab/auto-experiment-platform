@@ -1,0 +1,51 @@
+{
+  "captured_at": "20260714_132511",
+  "mode": "full",
+  "geometry_locked": false,
+  "geometry": {
+    "meniscus_y": 359,
+    "liquid_bottom_y": 620,
+    "body_x0": 632,
+    "body_x1": 744,
+    "fill_fraction": 0.7081
+  },
+  "white_balance_fixed": 4600,
+  "sediment_front_y": 474,
+  "wavelengths": [
+    {
+      "nm": 625,
+      "label": "625",
+      "channel": "G",
+      "intensity_pct": 1,
+      "pedestal_mode": "cap",
+      "extinct_y": null,
+      "od_last": 2.445,
+      "photo": "shot_red.jpg",
+      "warning": "Dominant channel is near saturation (dom=251, clip=0.0%)"
+    },
+    {
+      "nm": 525,
+      "label": "525",
+      "channel": "B",
+      "intensity_pct": 1,
+      "pedestal_mode": "cap",
+      "extinct_y": null,
+      "od_last": 2.116,
+      "photo": "shot_green.jpg",
+      "warning": "Dominant channel is near saturation (dom=252, clip=0.0%)"
+    },
+    {
+      "nm": 465,
+      "label": "465",
+      "channel": "G",
+      "intensity_pct": 1,
+      "pedestal_mode": "cap",
+      "extinct_y": null,
+      "od_last": 2.343,
+      "photo": "shot_blue.jpg",
+      "warning": "Dominant channel is near saturation (dom=252, clip=3.5%)"
+    }
+  ],
+  "folder": "26_7_2",
+  "run_name": "1_10"
+}

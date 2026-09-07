@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        # requirements.txt is deliberately NOT installed here: it pulls torch,
+        # streamlit, faster-whisper, google-generativeai and the pinned
+        # opencv-python wheel, which are heavy and irrelevant to schema
+        # validation and mock runs. This is the minimal set that lets
+        # `src.flow` and `src.devices` import on a headless runner.
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            pydantic \
+            python-dotenv \
+            pyyaml \
+            pytest \
+            numpy \
+            pandas \
+            matplotlib \
+            pyserial \
+            pydobot \
+            bleak \
+            opencv-python-headless \
+            fastapi \
+            uvicorn \
+            httpx \
+            python-multipart
+
+      - name: Byte-compile all Python sources
+        run: |
+          find src detection examples -name '*.py' -print0 \
+            | xargs -0 python -m py_compile
+
+      - name: Run unit tests
+        run: python -m pytest tests/ src/monitoring/tests/ -q
+
+      - name: Validate example flows against the schema
+        run: |
+          for f in examples/zif8/*.json; do
+            echo "::group::$f"
+            python -m src.flow.run_flow "$f" --validate-only
+            echo "::endgroup::"
+          done
+
+      - name: Dry-run an example flow without hardware
+        run: |
+          python -m src.flow.run_flow \
+            examples/zif8/zif8_two_solution_mixing_speed5.json --mock
+
+      - name: Recompute the dispensing-stability statistics
+        run: python examples/dispensing_stability/stats.py

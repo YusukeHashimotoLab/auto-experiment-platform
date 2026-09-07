@@ -1,0 +1,53 @@
+# Python dependencies for the automated experimentation platform.
+#   pip install -r requirements.txt
+#
+# Modules are grouped by directory; platform-specific lines use PEP 508
+# environment markers so a single install works on macOS, Windows and Linux.
+
+# --- src/imaging/ : appearance-imaging system (light + camera + analysis) ---
+numpy>=1.26
+pillow>=10.0
+matplotlib>=3.8          # make_panel.py (figure with cropped photos + depth profile)
+bleak>=0.21              # NEEWER RGB62 Bluetooth LE control
+pyobjc-framework-CoreBluetooth>=10 ; sys_platform == "darwin"   # light control via CoreBluetooth
+pyobjc-framework-libdispatch>=10 ; sys_platform == "darwin"
+# Windows only: the camera is driven through OpenCV/DirectShow.
+# Keep opencv-python on 4.12.x — 4.13+ (incl. 5.0) breaks get/set of
+# CAP_PROP_WHITE_BALANCE_BLUE_U on the Logitech C920, so the required manual
+# white balance (4600 K) can no longer be fixed.
+opencv-python==4.12.0.88 ; sys_platform == "win32"
+pygrabber>=0.2 ; sys_platform == "win32"
+# macOS: video via ffmpeg (AVFoundation) and camera controls via `uvc-util`;
+# both are external executables, see src/imaging/README.md.
+
+# --- src/flow/ , src/devices/ : flow validation + instrument drivers ---------
+pydantic>=2.5
+python-dotenv>=1.0
+pyyaml>=6.0               # config.yaml loader (src/config.py, src/monitoring)
+pyserial>=3.5             # Picus 2 (USB), balances, IKA stirrer
+pydobot>=1.3.2            # Dobot Magician
+bleak>=0.21               # Picus 2 over Bluetooth LE (also used by src/imaging)
+opencv-python==4.12.0.88 ; sys_platform != "win32"   # webcam capture (win32 pin above)
+numpy>=1.26
+pandas>=2.0               # IKA logging helpers
+matplotlib>=3.8
+
+# --- src/agent/ : experimental-flow generation ---------------------------------
+google-generativeai>=0.8  # LLM_MODE=gemini (default)
+openai>=1.50              # LLM_MODE=openai_compatible (optional)
+
+# --- src/gui/ : Streamlit GUI ----------------------------------------------------
+streamlit>=1.40
+streamlit-mic-recorder>=0.0.8
+requests>=2.31
+
+# --- src/voice/ : speech recognition (whisper-large-v3-turbo) --------------------
+faster-whisper>=1.0
+torch>=2.2                # device selection; CPU wheels are sufficient
+# optional alternatives: openai-whisper ; transformers (kotoba-whisper)
+
+# --- src/monitoring/ : sensor dashboard (control PC) -----------------------------
+# Installed separately (pinned versions):  pip install -r src/monitoring/requirements.txt
+
+# --- tests/ : pytest suite (pytest tests/) ---------------------------------------
+pytest>=8.0

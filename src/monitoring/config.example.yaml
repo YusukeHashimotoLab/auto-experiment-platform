@@ -1,0 +1,20 @@
+# Example configuration for src/monitoring.
+#
+# Copy this file to config.yaml (same directory) and edit as needed.
+# config.yaml is gitignored — it is meant to hold your local environment's
+# port numbers, not to be committed. If config.yaml is absent,
+# launch_sensor_dashboard.py falls back to this file, and if this file is
+# also absent, to the built-in defaults shown below.
+
+sensor_dashboard:
+  # Port the browser dashboard (FastAPI/uvicorn) listens on.
+  web_port: 8000
+  # TCP port the dashboard listens on for Pi sensor-agent connections.
+  # Must match SENSOR_AGENT_PC_PORT in /etc/sensor-agent.env on every Pi.
+  tcp_port: 50001
+
+video:
+  # OpenCV camera index for the overhead-view recorder (video_recorder.py).
+  # Platform- and machine-dependent; check with a short OpenCV probe script
+  # if recordings come out from the wrong camera.
+  camera_index: 1

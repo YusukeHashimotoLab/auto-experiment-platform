@@ -1,0 +1,477 @@
+#jsonの型検証ファイル（validation有）
+
+from pydantic import BaseModel, Field
+from typing import Literal, Union, List
+
+# ==========================================
+# 1. 個別のアクション定義 (Dobot用)
+# ==========================================
+
+#...は必須項目を示す
+class ActionMoveXYZ(BaseModel):
+    """
+    XYZ絶対座標への移動
+    LabRobot.move_xyz(x, y, z) に対応
+    """
+    action: Literal["move_xyz"] = Field(
+        ...,
+        description="アクション識別子: 絶対座標移動"
+    )
+    x: float = Field(..., description="目標X座標 (mm)")
+    y: float = Field(..., description="目標Y座標 (mm)")
+    z: float = Field(..., description="目標Z座標 (mm)")
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionMoveZ(BaseModel):
+    """
+    Z軸方向への相対移動
+    LabRobot.move_z(distance) に対応
+    """
+    action: Literal["move_z"] = Field(
+        ...,
+        description="アクション識別子: Z軸相対移動"
+    )
+    distance: float = Field(
+        ...,
+        description="移動距離 (mm)。正の値で上昇、負の値で下降"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionRotate(BaseModel):
+    """
+    ベース回転（Joint1）
+    LabRobot.rotate(angle) に対応
+    """
+    action: Literal["rotate"] = Field(
+        ...,
+        description="アクション識別子: ベース回転"
+    )
+    angle: float = Field(
+        ...,
+        description="目標角度 (度)。Joint1の絶対角度"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionRotateRelative(BaseModel):
+    """
+    ベース相対回転（Joint1）
+    LabRobot.rotate_relative(delta_angle, speed) に対応
+    """
+    action: Literal["rotate_relative"] = Field(
+        ...,
+        description="アクション識別子: ベース相対回転"
+    )
+    angle: float = Field(
+        ...,
+        description="回転角度 (度)。現在位置からの相対角度。正=反時計回り（上から見て、+Y方向）、負=時計回り"
+    )
+    speed: Literal["low", "normal", "high"] = Field(
+        default="low",
+        description="回転速度。low=低速, normal=普通, high=高速"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionMoveRadial(BaseModel):
+    """
+    半径方向への相対移動（円柱座標系）
+    LabRobot.move_radial(distance) に対応
+
+    アームの向きを維持したまま、基部からの距離を変更します。
+    """
+    action: Literal["move_radial"] = Field(
+        ...,
+        description="アクション識別子: 半径方向相対移動"
+    )
+    distance: float = Field(
+        ...,
+        description="半径方向の移動距離 (mm)。正の値で外向き（基部から離れる）、負の値で内向き（基部に近づく）"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionGoHome(BaseModel):
+    """
+    ホームポジションへの復帰
+    LabRobot.go_home() に対応
+    """
+    action: Literal["go_home"] = Field(
+        ...,
+        description="アクション識別子: ホーム復帰"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+# ==========================================
+# 1.1 個別のアクション定義 (Dobot周辺機器用)
+# ==========================================
+
+class ActionMoveSlider(BaseModel):
+    """
+    スライダー（リニアレール）を絶対位置に移動
+    LabRobot.move_slider(position) に対応
+    """
+    action: Literal["move_slider"] = Field(
+        ...,
+        description="アクション識別子: スライダー移動"
+    )
+    position: float = Field(
+        ...,
+        ge=0,
+        le=1000.0,
+        description="スライダー目標位置 (mm)。0以上1000以下"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionMoveConveyer(BaseModel):
+    """
+    コンベアベルトを動作させる
+    LabRobot.move_conveyer(index, speed, duration) に対応
+    """
+    action: Literal["move_conveyer"] = Field(
+        ...,
+        description="アクション識別子: コンベアベルト動作"
+    )
+    index: int = Field(
+        default=0,
+        ge=0,
+        le=1,
+        description="コンベアベルトのインデックス (0 or 1)"
+    )
+    speed: float = Field(
+        ...,
+        gt=0,
+        le=200,
+        description="コンベアベルト速度 (mm/s)"
+    )
+    duration: float = Field(
+        ...,
+        gt=0,
+        le=300,
+        description="動作時間 (秒)。最大300秒"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionWait(BaseModel):
+    """
+    待機（ユーティリティ）
+    asyncio.sleep(seconds) に対応
+    """
+    action: Literal["wait"] = Field(
+        ...,
+        description="アクション識別子: 待機"
+    )
+    seconds: float = Field(
+        ...,
+        ge=0,
+        description="待機時間 (秒)"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+# ==========================================
+# 1.5 個別のアクション定義 (Picus2電動ピペット用)
+# ==========================================
+
+class ActionAspirate(BaseModel):
+    """
+    液体の吸引
+    LabRobot.aspirate(volume, speed) に対応
+
+    安全機能:
+    - 最大容量（10mL）を超える吸引を防止
+    - 連続吸引時の容量オーバーチェック
+    """
+    action: Literal["aspirate"] = Field(
+        ...,
+        description="アクション識別子: 液体吸引"
+    )
+    volume: float = Field(
+        ...,
+        gt=0,
+        le=10.0,
+        description="吸引量 (mL)。0より大きく10mL以下"
+    )
+    speed: int = Field(
+        default=5,
+        ge=1,
+        le=9,
+        description="吸引速度 (1-9)。1が最も遅く、9が最も速い"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionDispense(BaseModel):
+    """
+    液体の分注
+    LabRobot.dispense(volume, speed) に対応
+
+    安全機能:
+    - 保持量を超える分注を防止
+    - 吸引なしでの分注時に警告
+    """
+    action: Literal["dispense"] = Field(
+        ...,
+        description="アクション識別子: 液体分注"
+    )
+    volume: float = Field(
+        ...,
+        gt=0,
+        le=10.0,
+        description="分注量 (mL)。0より大きく保持量以下"
+    )
+    speed: int = Field(
+        default=5,
+        ge=1,
+        le=9,
+        description="分注速度 (1-9)。1が最も遅く、9が最も速い"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+class ActionBlowOut(BaseModel):
+    """
+    液体の完全排出（ブローアウト）
+    LabRobot.blow_out(go_home, speed, delay_ms) に対応
+
+    チップ内に残った液体を完全に排出します。
+    分注後の残液除去や、粘性の高い液体の完全吐出に使用。
+    """
+    action: Literal["blow_out"] = Field(
+        ...,
+        description="アクション識別子: 液体完全排出"
+    )
+    go_home: bool = Field(
+        default=True,
+        description="終了後にピストンをホームポジションに戻すか"
+    )
+    speed: int = Field(
+        default=1,
+        ge=1,
+        le=9,
+        description="排出速度 (1-9)。1が最も遅く安全"
+    )
+    delay_ms: int = Field(
+        default=3000,
+        ge=0,
+        description="排出所要時間 (ミリ秒)"
+    )
+    robot_id: int = Field(
+        default=1,
+        ge=1,
+        le=3,
+        description="操作対象のロボットID (1, 2, or 3)"
+    )
+
+# ==========================================
+# 1.6 個別のアクション定義 (共有デバイス: Webcam用)
+# ==========================================
+
+class ActionCaptureAndSave(BaseModel):
+    """
+    Webcamで画像をキャプチャしてファイルに保存
+    SharedDevices.capture_and_save(file_path) に対応
+
+    Note:
+        共有デバイスのため、robot_idは不要です。
+    """
+    action: Literal["capture_and_save"] = Field(
+        ...,
+        description="アクション識別子: 画像キャプチャ・保存"
+    )
+    file_path: str = Field(
+        default="",
+        description="保存先のファイル名（空欄で自動生成）"
+    )
+
+# ==========================================
+# 1.7 個別のアクション定義 (共有デバイス: BCE8221電子天秤用)
+# ==========================================
+
+class ActionMeasureWeight(BaseModel):
+    """
+    BCE8221電子天秤で重量測定
+    SharedDevices.measure_weight(stabilization_count) に対応
+
+    Note:
+        共有デバイスのため、robot_idは不要です。
+    """
+    action: Literal["measure_weight"] = Field(
+        ...,
+        description="アクション識別子: 重量測定"
+    )
+    stabilization_count: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        description="測定回数（中央値を返す）"
+    )
+
+class ActionTareScale(BaseModel):
+    """
+    BCE8221電子天秤の風袋引き（ゼロ点リセット）
+    SharedDevices.tare_scale(delay) に対応
+
+    Note:
+        共有デバイスのため、robot_idは不要です。
+    """
+    action: Literal["tare_scale"] = Field(
+        ...,
+        description="アクション識別子: 風袋引き"
+    )
+    delay: float = Field(
+        default=1.0,
+        ge=0.1,
+        le=10.0,
+        description="風袋引き後の待機時間 (秒)"
+    )
+
+# ==========================================
+# 1.8 個別のアクション定義 (ループ制御)
+# ==========================================
+
+class ActionLoopStart(BaseModel):
+    """
+    ループ開始マーカー
+    loop_idで対応するloop_endと紐づける
+
+    Note:
+        これは制御フローアクションであり、デバイス操作ではありません。
+        実行時にexpand_loops()によってフラットなリストに展開されます。
+    """
+    action: Literal["loop_start"] = Field(
+        ...,
+        description="アクション識別子: ループ開始"
+    )
+    loop_id: str = Field(
+        ...,
+        description="ループ識別子（対応するloop_endと一致させる）"
+    )
+    count: int = Field(
+        ...,
+        ge=1,
+        le=1000,
+        description="繰り返し回数（1-1000）"
+    )
+
+class ActionLoopEnd(BaseModel):
+    """
+    ループ終了マーカー
+    loop_idで対応するloop_startと紐づける
+
+    Note:
+        これは制御フローアクションであり、デバイス操作ではありません。
+        実行時にexpand_loops()によってフラットなリストに展開されます。
+    """
+    action: Literal["loop_end"] = Field(
+        ...,
+        description="アクション識別子: ループ終了"
+    )
+    loop_id: str = Field(
+        ...,
+        description="ループ識別子（対応するloop_startと一致させる）"
+    )
+
+# ==========================================
+# 2. アクションの統合型 (Union)
+# ==========================================
+
+# ここにリストされた型だけが「有効なステップ」として認められます
+LabRobotAction = Union[
+    # Dobot（ロボットアーム）操作
+    ActionMoveXYZ,
+    ActionMoveZ,
+    ActionMoveRadial,
+    ActionRotate,
+    ActionRotateRelative,
+    ActionGoHome,
+    # Dobot（周辺機器）操作
+    ActionMoveSlider,
+    ActionMoveConveyer,
+    # Picus2（電動ピペット）操作
+    ActionAspirate,
+    ActionDispense,
+    ActionBlowOut,
+    # カメラ操作
+    ActionCaptureAndSave,
+    # 電子天秤操作（BCE8221）
+    ActionMeasureWeight,
+    ActionTareScale,
+    # ユーティリティ
+    ActionWait,
+    # ループ制御
+    ActionLoopStart,
+    ActionLoopEnd,
+]
+
+# 後方互換性のためのエイリアス
+DobotAction = LabRobotAction
+
+# ==========================================
+# 3. ワークフロー全体の定義
+# ==========================================
+
+class ExperimentWorkflow(BaseModel):
+    """
+    実験ワークフロー全体の定義
+    """
+    name: str = Field(..., description="実験の名前")
+    description: str = Field("", description="実験の説明")
+    steps: List[LabRobotAction] = Field(..., description="実行する手順のリスト")
+
+# ==========================================
+# 4. デバッグ用: JSONスキーマの出力機能
+# ==========================================
+if __name__ == "__main__":
+    import json
+    # このスクリプトを実行すると、LLMに渡すべきJSONスキーマが表示されます
+    print(json.dumps(ExperimentWorkflow.model_json_schema(), indent=2, ensure_ascii=False))

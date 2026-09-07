@@ -1,0 +1,17 @@
+[Unit]
+Description=Lab Sensor Agent (pushes sensor data to dashboard PC)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/sensor-agent.env
+ExecStart=/usr/bin/python3 /home/%i/pi_sensor_agent.py
+Restart=always
+RestartSec=5
+User=%i
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

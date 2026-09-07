@@ -1,0 +1,30 @@
+{
+  "hidden": true,
+  "label": "秤量分注①②③　ビン→天秤＋Robot 1・2 位置調整",
+  "description": "Robot 3でビンを天秤に載せた後、Robot 1とRobot 2の分注経路を確認する統合プリセット。",
+  "template": {
+    "name": "ビン→天秤＋Robot 1・2 位置調整",
+    "description": "Robot 3でビンを天秤へ移動して終了。続けてRobot 1・Robot 2それぞれの分注位置を下降→上昇→回転→下降→上昇で確認する。",
+    "steps": [
+      {"action": "move_radial", "robot_id": 3, "distance": 45},
+      {"action": "move_z", "robot_id": 3, "distance": 140},
+      {"action": "rotate_relative", "robot_id": 3, "angle": 90, "speed": "low"},
+      {"action": "move_radial", "robot_id": 3, "distance": 40},
+      {"action": "move_z", "robot_id": 3, "distance": -50},
+
+      {"action": "move_z", "robot_id": 1, "distance": -170},
+      {"action": "move_z", "robot_id": 1, "distance": 170},
+      {"action": "rotate_relative", "robot_id": 1, "angle": 98.5, "speed": "low"},
+      {"action": "move_z", "robot_id": 1, "distance": -110},
+      {"action": "move_z", "robot_id": 1, "distance": 110},
+      {"action": "rotate_relative", "robot_id": 1, "angle": -98.5, "speed": "low"},
+
+      {"action": "move_z", "robot_id": 2, "distance": -170},
+      {"action": "move_z", "robot_id": 2, "distance": 170},
+      {"action": "rotate_relative", "robot_id": 2, "angle": -96.5, "speed": "low"},
+      {"action": "move_z", "robot_id": 2, "distance": -110},
+      {"action": "move_z", "robot_id": 2, "distance": 110},
+      {"action": "rotate_relative", "robot_id": 2, "angle": 96.5, "speed": "low"}
+    ]
+  }
+}

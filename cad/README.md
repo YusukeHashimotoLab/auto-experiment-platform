@@ -15,6 +15,9 @@ Each component directory should contain three formats:
 | `.step` | Neutral exchange format for other CAD software |
 | `.stl` | Ready to slice and print |
 
+> **Release status (2026-09-08):** the component directories below are placeholders.
+> The `.f3d` / `.step` / `.stl` files have not yet been added to the repository.
+
 ## Components
 
 | Directory | Component |
