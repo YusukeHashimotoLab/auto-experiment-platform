@@ -17,9 +17,8 @@ license: MIT
 version: "0.1.0"
 # TODO: replace with the actual release date when the version above is tagged.
 date-released: "2026-09-08"
-# TODO: replace TODO-ORG with the real GitHub organisation/user before release.
-repository-code: "https://github.com/TODO-ORG/auto-experiment-platform"
-url: "https://github.com/TODO-ORG/auto-experiment-platform"
+repository-code: "https://github.com/YusukeHashimotoLab/auto-experiment-platform"
+url: "https://github.com/YusukeHashimotoLab/auto-experiment-platform"
 keywords:
   - laboratory automation
   - materials synthesis

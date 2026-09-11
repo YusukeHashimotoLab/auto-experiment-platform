@@ -28,7 +28,7 @@ Connect everything to the control PC and note the port of each device
 ## 2. Software
 
 ```bash
-git clone <this repository>
+git clone https://github.com/YusukeHashimotoLab/auto-experiment-platform.git
 cd auto-experiment-platform
 python -m venv venv
 # Windows

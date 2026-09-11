@@ -4,6 +4,8 @@ A simple, easy-to-introduce, open-source platform for automated materials-synthe
 experiments, focusing on **reliable automation and quantitative process recording**
 rather than full autonomy.
 
+Repository: https://github.com/YusukeHashimotoLab/auto-experiment-platform
+
 This repository accompanies the paper:
 
 > *Quantitative control and improved reproducibility of materials synthesis processes
