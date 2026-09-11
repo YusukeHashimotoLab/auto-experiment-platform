@@ -30,15 +30,15 @@ the solution dispensing speed was quantified and reproduced.
 | `src/monitoring/` | IoT sensor logging (Raspberry Pi + Environment Sensor HAT) and process cameras |
 | `src/imaging/` | Appearance-imaging system: NEEWER RGB62 light + Logitech C920n camera control, white/red/green/blue capture sequence, cropped-image comparison and depth-direction transmitted-light profiles (paper Figure 6) |
 | `detection/` | Object detection based on YOLOv8 — **kept separate for licensing reasons, see below** |
-| `cad/` | CAD design bank of 3D-printable experimental components (STL included; F3D / STEP to follow) |
+| `cad/` | CAD design bank of 3D-printable experimental components (STL + editable Fusion 360 sources) |
 | `docs/` | Bill of materials, setup guide, experimental-flow format reference, spreadsheet-input guide |
 | `examples/zif8/` | Sample experimental flows and process logs from the ZIF-8 demonstration |
 
 ## Getting started
 
 1. See [`docs/bom.md`](docs/bom.md) for the full list of hardware used.
-2. Print the fixtures in `cad/` (STL files for all four components; editable
-   F3D/STEP sources are still to be added — see [`cad/README.md`](cad/README.md)).
+2. Print the fixtures in `cad/` (STL files; the Fusion 360 sources are included for
+   modification — see [`cad/README.md`](cad/README.md)).
 3. Follow [`docs/setup.md`](docs/setup.md) to connect the instruments to the control PC.
 4. Copy `config.example.yaml` to `config.yaml` and set the COM ports and workspace
    limits of your own cell; copy `.env.example` to `.env` and set your API keys.

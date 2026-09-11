@@ -17,7 +17,7 @@ paper's "Imaging system for appearance evaluation" section and Figure 6.
 |---|---|---|---|
 | Light | NEEWER RGB62 | Bluetooth LE | White (CCT) and single-colour (HSI) modes; controlled by [`neewer_light.py`](neewer_light.py) |
 | Camera | Logitech C920n (HD Pro Webcam C920) | USB | Video + control abstracted by [`hw.py`](hw.py) |
-| Holding stand | 3D-printed | — | Fixes the relative positions of light, vial and camera; source files in [`cad/imaging-stand/`](../../cad/imaging-stand/) |
+| Holding stand | 3D-printed | — | Fixes the relative positions of light, vial and camera; STL and Fusion 360 sources in [`cad/imaging-stand/`](../../cad/imaging-stand/), together with a light shield placed over the stand |
 | Control PC | — | — | Runs `camera_server.py`, `acquire.py`, `make_panel.py` |
 
 See [`docs/bom.md`](../../docs/bom.md) for the full platform bill of materials.
