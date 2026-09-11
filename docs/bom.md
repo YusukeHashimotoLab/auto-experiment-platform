@@ -23,7 +23,7 @@ per-device and can be adapted.
 | Item | Model | Notes |
 |---|---|---|
 | 3D printer | Bambu Lab X1E | Used to print all fixtures in `cad/` |
-| CAD software | Autodesk Fusion 360 | Source `.f3d` files provided in `cad/` |
+| CAD software | Autodesk Fusion 360 | Models in `cad/` (STL provided; `.f3d` sources to follow) |
 
 ## Software / AI services
 
