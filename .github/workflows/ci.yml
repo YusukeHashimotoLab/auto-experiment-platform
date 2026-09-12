@@ -54,7 +54,8 @@ jobs:
             fastapi \
             uvicorn \
             httpx \
-            python-multipart
+            python-multipart \
+            zeroconf
 
       - name: Byte-compile all Python sources
         run: |
