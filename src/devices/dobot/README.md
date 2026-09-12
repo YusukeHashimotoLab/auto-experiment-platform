@@ -61,7 +61,7 @@ PyDobotController.list_available_ports()
 
 ## 依存関係
 
-- `pydobot`（MIT License、`THIRD_PARTY_NOTICES.md` 参照）
+- `pydobot`（Copyright 2017 Luis Mesas, MIT License。`pydobot_patch.py` はこのライブラリの `_read_message` を差し替える派生コードです。全文は `THIRD_PARTY_NOTICES.md` 参照）
 - `pyserial`
 
 Dobot 純正 DLL（DobotDll）を用いる旧ドライバはライセンス上の理由で本リポジトリには含めていません。

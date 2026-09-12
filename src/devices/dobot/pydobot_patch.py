@@ -8,6 +8,11 @@ pydobot の _read_message をリトライ付きに差し替えるモンキーパ
 
     このパッチは待機時間を最大 timeout 秒まで延長し、
     poll_interval 間隔でポーリングすることで問題を解消する。
+
+著作権表示:
+    差し替え対象の _read_message は pydobot (https://github.com/luismesas/pydobot)
+    Copyright 2017 Luis Mesas, MIT License に由来する。全文は
+    リポジトリ直下の THIRD_PARTY_NOTICES.md を参照。
 """
 
 import logging

@@ -97,6 +97,10 @@ JSON equivalents of the spreadsheet sequence the paper's batches were run with �
 ## Licensing
 
 - **Code** (`src/`, `examples/`): MIT License — see [`LICENSE`](LICENSE). Third-party components are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+  The robot-arm driver uses [pydobot](https://github.com/luismesas/pydobot)
+  (Copyright 2017 Luis Mesas, MIT License) with a small patch in
+  `src/devices/dobot/pydobot_patch.py`. The vendor SDK (DobotDll) is **not** used and
+  is not included in this repository.
 - **CAD models and documentation** (`cad/`, `docs/`): Creative Commons Attribution 4.0
   (CC BY 4.0) — see [`cad/README.md`](cad/README.md).
 - **Object detection** (`detection/`): depends on [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics),
