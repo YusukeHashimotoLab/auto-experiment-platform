@@ -128,9 +128,9 @@ To obtain a model:
 If you need the exact weights used in the paper for comparison purposes, contact the
 authors.
 
-## Unpublished extension: additional video frames
+## Not included: additional video frames
 
-The original working repository also contains 20 unannotated frames extracted from an
+The lab's working copy also holds 20 unannotated frames extracted from an
 experiment video (`data/video_frames/`), collected for a planned but never-run third
 training pass that would have added video-derived frames to the still-image dataset.
 These frames are **not** part of the published model's training set described above

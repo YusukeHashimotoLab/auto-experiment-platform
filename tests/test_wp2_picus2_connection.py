@@ -1,4 +1,4 @@
-"""WP-2 item 1: Picus2 の接続失敗を黙って握りつぶさないこと。
+"""Picus 2 connection: Picus2 の接続失敗を黙って握りつぶさないこと。
 
 serial / bleak は実環境にしか無いので sys.modules へスタブを入れてから import する。
 """

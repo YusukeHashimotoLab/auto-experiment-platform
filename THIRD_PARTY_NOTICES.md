@@ -36,6 +36,13 @@ CTranslate2 conversion `deepdml/faster-whisper-large-v3-turbo-ct2`, and optional
 `kotoba-tech/kotoba-whisper-v2.0` (Apache-2.0), from Hugging Face at first use. They
 are not redistributed here.
 
+## Browser libraries loaded by the sensor dashboard
+
+`src/monitoring/dashboard/static/index.html` loads [Chart.js](https://www.chartjs.org/)
+(MIT), [Hammer.js](https://hammerjs.github.io/) (MIT) and
+[chartjs-plugin-zoom](https://www.chartjs.org/chartjs-plugin-zoom/) (MIT) from the
+jsDelivr CDN at page load. They are not redistributed in this repository.
+
 ## Python packages
 
 Runtime dependencies listed in `requirements.txt` are used unmodified under their

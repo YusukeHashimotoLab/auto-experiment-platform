@@ -1,4 +1,4 @@
-"""WP-2 item 3: LabRobot が呼ぶ IKA の API が実際に存在すること／import が Tk を要求しないこと。"""
+"""IKA driver interface: LabRobot が呼ぶ IKA の API が実際に存在すること／import が Tk を要求しないこと。"""
 import asyncio
 import sys
 

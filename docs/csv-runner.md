@@ -208,6 +208,6 @@ commit `4584333` — 5 mL per solution, 0.1 mm aspiration descent, 120 mm dispen
 descent, ±90° rotations, Robot 1 dispensing at speed 9, Robot 2 at speed 1, aspiration
 at speed 1. Those are the sheet's values at that commit, **not necessarily the values
 of every batch**: the dispensing speed of Robot 2 was varied over 1 / 5 / 9 across the
-nine batches. The per-batch run records are being retrieved from the laboratory
-control PC; until they are published, treat the example sheet as the shape of the
+nine batches. The per-batch run records are not published yet;
+until they are, treat the example sheet as the shape of the
 input, not as a run record.

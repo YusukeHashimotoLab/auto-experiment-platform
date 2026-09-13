@@ -7,7 +7,8 @@
 # reading of the electronic balance.
 #
 # It is reproduced here verbatim (apart from this header and the Bluetooth MAC
-# addresses, which were replaced by XX:XX:XX:XX:XX:XX placeholders) for provenance only.
+# addresses and pipette serial numbers, which were replaced by placeholders) for
+# provenance only.
 # It depends on three lab-local modules that are NOT part of this repository
 # and are not published:
 #
@@ -70,7 +71,7 @@ def main():
     for i in range(100):
 
         mi_params = {
-            "picus2_address": 'XX:XX:XX:XX:XX:XX',  # Picus-45080151
+            "picus2_address": 'XX:XX:XX:XX:XX:XX',  # pipette 1
             "picus2_debug": False,
             "dobot_port_name": "COM7",
             "homing": False,
@@ -111,7 +112,7 @@ def main():
     # time.sleep(3)
     #
     # mi_params = {
-    #     "picus2_address": 'XX:XX:XX:XX:XX:XX',  # Picus-45281530
+    #     "picus2_address": 'XX:XX:XX:XX:XX:XX',  # pipette 2
     #     "picus2_debug": False,
     #     "dobot_port_name": "COM14",
     #     "homing": False,

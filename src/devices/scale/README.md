@@ -15,7 +15,7 @@ A&D EK-610i 系電子天びんをRS-232C経由で操作するためのコント�
 ### 基本的な使用例
 
 ```python
-from devices.scale import ScaleController
+from src.devices.scale import ScaleController
 
 # コンテキストマネージャーとして使用（推奨）
 with ScaleController(port="COM3") as scale:

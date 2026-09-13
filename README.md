@@ -34,7 +34,8 @@ the solution dispensing speed was quantified and reproduced.
 | `detection/` | Object detection based on YOLOv8 — **kept separate for licensing reasons, see below** |
 | `cad/` | CAD design bank of 3D-printable experimental components (STL + editable Fusion 360 sources) |
 | `docs/` | Bill of materials, setup guide, experimental-flow format reference, spreadsheet-input guide |
-| `examples/zif8/` | Sample experimental flows and process logs from the ZIF-8 demonstration |
+| `examples/zif8/` | Sample experimental flows of the ZIF-8 demonstration (JSON equivalents of the spreadsheet sequence) and monitoring CSV templates |
+| `examples/dispensing_stability/` | Measured data of the 100-shot dispensing-repeatability test and the script that recorded it |
 
 ## Getting started
 
@@ -102,7 +103,8 @@ JSON equivalents of the spreadsheet sequence the paper's batches were run with �
   `src/devices/dobot/pydobot_patch.py`. The vendor SDK (DobotDll) is **not** used and
   is not included in this repository.
 - **CAD models and documentation** (`cad/`, `docs/`): Creative Commons Attribution 4.0
-  (CC BY 4.0) — see [`cad/README.md`](cad/README.md).
+  (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/); the CAD-specific notes are in
+  [`cad/README.md`](cad/README.md).
 - **Object detection** (`detection/`): depends on [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics),
   which is licensed under **AGPL-3.0**. This module is therefore isolated from the
   MIT-licensed code and is distributed under AGPL-3.0. The rest of the platform runs

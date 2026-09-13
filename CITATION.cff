@@ -12,7 +12,7 @@ authors:
     given-names: Yusuke
     affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
     # TODO: add ORCID, e.g. orcid: "https://orcid.org/0000-0000-0000-0000"
-  - name: "TODO: remaining co-authors"
+  # TODO: add the remaining co-authors in paper order.
 license: MIT
 version: "0.1.0"
 # TODO: replace with the actual release date when the version above is tagged.
@@ -38,4 +38,4 @@ preferred-citation:
     - family-names: Hashimoto
       given-names: Yusuke
       affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
-    - name: "TODO: remaining co-authors"
+    # TODO: add the remaining co-authors in paper order.

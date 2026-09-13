@@ -1,4 +1,4 @@
-"""WP-2 item 4: 回転角の符号規約がコード・スキーマ・プリセットで一致していること。
+"""Rotation convention: 回転角の符号規約がコード・スキーマ・プリセットで一致していること。
 
 真値: LabRobot.rotate_relative は target = 現在のJ1 + delta を PyDobotController.move_angle に渡し、
 move_angle は MOVJ_ANGLE で J1 を絶対指定する。Dobot Magician の J1 は正方向が上から見て反時計回り

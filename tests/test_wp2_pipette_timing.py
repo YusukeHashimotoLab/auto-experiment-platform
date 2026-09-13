@@ -1,4 +1,4 @@
-"""WP-2 item 5: ピペット公称所要時間（マニュアル p.63 の表）をログ／記録に載せる。"""
+"""Pipette timing: ピペット公称所要時間（マニュアル p.63 の表）をログ／記録に載せる。"""
 import asyncio
 import logging
 

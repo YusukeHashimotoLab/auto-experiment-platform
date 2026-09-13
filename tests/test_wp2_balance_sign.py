@@ -1,4 +1,4 @@
-"""WP-2 item 2: BCE8221 のプリントアウトで符号が失われないこと。"""
+"""Balance driver: BCE8221 のプリントアウトで符号が失われないこと。"""
 import sys
 import types
 

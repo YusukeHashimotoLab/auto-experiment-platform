@@ -47,8 +47,8 @@ a validated measurement. Specifically:
   default and shows the white photograph for visual reference only;
   `--with-white` plots it anyway, dashed over the saturated rows. Every run
   in this measurement batch has a white reference clipped between 62 % and
-  90 % over the vial-neck region, which is why the batch is on the internal
-  re-measure list.
+  90 % over the vial-neck region, which is why this batch should be re-measured
+  with a lower white intensity.
 - **The 465 nm channel is clipped too.** Its secondary (G) channel saturates
   over 39 % of the liquid rows, again in the clear supernatant. Where the
   465 nm curve sits at T ≈ 1 it is reporting a clipped sensor reading, not a

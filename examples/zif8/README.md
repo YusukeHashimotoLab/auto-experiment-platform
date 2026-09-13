@@ -39,9 +39,9 @@ here express that same sequence for the JSON runner.
 >   at speed 1 for both robots — are those of the lab's committed control sheet at
 >   that commit. They are **not necessarily the values of every batch**: the
 >   dispensing speed of Robot 2 was varied over 1 / 5 / 9 across the nine batches,
->   which is what these three files differ in. The per-batch run records are being
->   retrieved from the laboratory control PC and will replace the placeholder
->   sensor CSVs below.
+>   which is what these three files differ in. The per-batch run records are not
+>   published yet; when they are added they will replace the placeholder sensor
+>   CSVs below.
 > - Aspiration ran at **speed 1** in every batch: it was the code constant
 >   `ASPIRATE_SPEED = 1`, not a spreadsheet cell. (A note in the lab's sheet
 >   claimed aspiration was "always 5"; that note was stale and never affected the
@@ -159,8 +159,8 @@ Or load the file in the GUI (`streamlit run src/gui/app.py`) and press Run.
 Sample process logs (dispensed masses, sensor CSVs, photographs) from the paper are
 not included in this directory yet, except for the monitoring placeholders below. The
 per-batch run records — the control sheet, `results.csv` and log folder of each of the
-nine batches — are being retrieved from the laboratory control PC and will be added
-here, replacing the placeholders below.
+nine batches — are not published yet and will be added here, replacing the
+placeholders below, when available.
 <!-- TODO: add sample logs / measured masses when ready -->
 
 For data that *is* real and published, see

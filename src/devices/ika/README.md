@@ -19,7 +19,7 @@
 ### 基本的な使用例
 
 ```python
-from ika.ika_controller import IKAController
+from src.devices.ika.ika_controller import IKAController
 import time
 
 # IKAコントローラーの初期化（ポート名を指定）
@@ -62,7 +62,7 @@ print(f"測定された重量: {weight}")
 ### 実験パラメータを使用した制御
 
 ```python
-from ika.ika_controller import IKAController, run_temperature_experiment
+from src.devices.ika.ika_controller import IKAController, run_temperature_experiment
 
 # IKAコントローラーの初期化
 device = IKAController(port='COM17')

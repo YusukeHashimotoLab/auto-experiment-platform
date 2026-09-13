@@ -1,4 +1,4 @@
-"""WP-2 item 6: Dobot ドライバの動作系メソッドが未接続時に黙って no-op しないこと。"""
+"""Dobot driver: Dobot ドライバの動作系メソッドが未接続時に黙って no-op しないこと。"""
 import inspect
 
 import pytest

@@ -39,7 +39,7 @@ dispensing time of **≈0.27 s for 3 mL (≈11 mL/s)**.
 | File | Contents |
 |---|---|
 | `weight.csv` | The raw data: header `weight` plus 100 balance differences in grams, verbatim as written by the script. |
-| `control_250328.py` | The script that produced `weight.csv` on 2025-03-28, verbatim apart from an added provenance header. It imports the lab-local modules `ika_control`, `material_injection` and `BCE8221`, which are **not** part of this repository, so it is **not runnable here** — it is kept for provenance. |
+| `control_250328.py` | The script that produced `weight.csv` on 2025-03-28, verbatim apart from an added provenance header and the redaction of the pipettes' Bluetooth addresses and serial numbers. It imports the lab-local modules `ika_control`, `material_injection` and `BCE8221`, which are **not** part of this repository, so it is **not runnable here** — it is kept for provenance. |
 | `stats.py` | Recomputes the statistics below from `weight.csv` (standard library + NumPy only). |
 
 ## Statistics
