@@ -6,13 +6,15 @@ abstract: >-
   JSON-defined experimental flows executed on robot arms with electronic
   pipettes, an electronic balance, hot-plate stirrers, cameras and IoT sensors.
 type: software
-# TODO: list all authors in paper order, with ORCID iDs, before release.
 authors:
   - family-names: Hashimoto
     given-names: Yusuke
     affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
-    # TODO: add ORCID, e.g. orcid: "https://orcid.org/0000-0000-0000-0000"
-  # TODO: add the remaining co-authors in paper order.
+    orcid: "https://orcid.org/0000-0002-1886-9332"
+  - family-names: Tomai
+    given-names: Takaaki
+    affiliation: "Tohoku University"
+    orcid: "https://orcid.org/0000-0003-0296-6565"
 license: MIT
 version: "0.1.0"
 # TODO: replace with the actual release date when the version above is tagged.
@@ -33,9 +35,13 @@ preferred-citation:
   # TODO: status is a placeholder - update to "published" (or remove) once the
   # article is out, and add doi, volume, issue, start/end pages or article number.
   status: submitted
-  # TODO: list all authors in paper order, with ORCID iDs.
+  # TODO: confirm the author list matches the paper's final author order.
   authors:
     - family-names: Hashimoto
       given-names: Yusuke
       affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
-    # TODO: add the remaining co-authors in paper order.
+      orcid: "https://orcid.org/0000-0002-1886-9332"
+    - family-names: Tomai
+      given-names: Takaaki
+      affiliation: "Tohoku University"
+      orcid: "https://orcid.org/0000-0003-0296-6565"
