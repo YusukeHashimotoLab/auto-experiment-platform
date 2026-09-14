@@ -29,8 +29,7 @@ authors:
     orcid: "https://orcid.org/0000-0003-0296-6565"
 license: MIT
 version: "0.1.0"
-# TODO: replace with the actual release date when the version above is tagged.
-date-released: "2026-09-08"
+date-released: "2026-09-14"
 repository-code: "https://github.com/YusukeHashimotoLab/saigen"
 url: "https://github.com/YusukeHashimotoLab/saigen"
 keywords:
