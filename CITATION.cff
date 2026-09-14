@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite both the software itself and the paper below."
-title: "Automated Experimentation Platform"
+title: "SAIGEN: Standardized Automation Infrastructure for Generalizable Experiment reproductioN"
 abstract: >-
   Open-source control software for an automated materials-synthesis platform:
   JSON-defined experimental flows executed on robot arms with electronic
@@ -31,8 +31,8 @@ license: MIT
 version: "0.1.0"
 # TODO: replace with the actual release date when the version above is tagged.
 date-released: "2026-09-08"
-repository-code: "https://github.com/YusukeHashimotoLab/auto-experiment-platform"
-url: "https://github.com/YusukeHashimotoLab/auto-experiment-platform"
+repository-code: "https://github.com/YusukeHashimotoLab/saigen"
+url: "https://github.com/YusukeHashimotoLab/saigen"
 keywords:
   - laboratory automation
   - materials synthesis

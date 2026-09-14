@@ -1,4 +1,4 @@
-# Python dependencies for the automated experimentation platform.
+# Python dependencies for SAIGEN, the automated experimentation platform.
 #   pip install -r requirements.txt
 #
 # Modules are grouped by directory; platform-specific lines use PEP 508

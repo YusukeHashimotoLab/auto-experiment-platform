@@ -28,8 +28,8 @@ Connect everything to the control PC and note the port of each device
 ## 2. Software
 
 ```bash
-git clone https://github.com/YusukeHashimotoLab/auto-experiment-platform.git
-cd auto-experiment-platform
+git clone https://github.com/YusukeHashimotoLab/saigen.git
+cd saigen
 python -m venv venv
 # Windows
 venv\Scripts\activate

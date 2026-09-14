@@ -1,10 +1,13 @@
-# Automated Experimentation Platform
+# SAIGEN
+
+**SAIGEN** — **S**tandardized **A**utomation **I**nfrastructure for **G**eneralizable
+**E**xperiment reproductio**N** (also *saigen*, 再現, Japanese for "reproduction").
 
 A simple, easy-to-introduce, open-source platform for automated materials-synthesis
 experiments, focusing on **reliable automation and quantitative process recording**
 rather than full autonomy.
 
-Repository: https://github.com/YusukeHashimotoLab/auto-experiment-platform
+Repository: https://github.com/YusukeHashimotoLab/saigen
 
 This repository accompanies the paper:
 
@@ -116,5 +119,5 @@ setup.
 
 ## Citing
 
-If you use this platform, please cite the paper above. Citation metadata is provided
+If you use SAIGEN, please cite the paper above. Citation metadata is provided
 in [`CITATION.cff`](CITATION.cff).

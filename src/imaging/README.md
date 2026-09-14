@@ -1,6 +1,6 @@
 # Imaging module
 
-Appearance-imaging system for the automated experimentation platform described
+Appearance-imaging system for SAIGEN, the automated experimentation platform described
 in *Quantitative control and improved reproducibility of materials synthesis
 processes using an automated experimentation platform* (see the [repository
 README](../../README.md)). It backlights a sample vial with an RGB light,
