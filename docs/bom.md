@@ -8,7 +8,7 @@ per-device and can be adapted.
 
 | Item | Model | Qty | Notes |
 |---|---|---|---|
-| Hot-plate stirrer | IKA RET control-visc | 2 | RT–400 °C, stirring + temperature control |
+| Hot-plate stirrer | IKA RET control-visc | 2 | RT–340 °C, 50–1700 rpm, RS-232/USB. Only stirring and temperature control are used; see the note below before buying this model |
 | Robot arm | Dobot Magician | 2 | One per solution to prevent cross-contamination |
 | Electric pipette | Sartorius Picus 2 (500–10,000 μL) | 2 | Dispensing speed electronically controlled in 9 steps, about 1–11 mL/s (nominal) |
 | Electronic balance | Sartorius BCE822i-1SJP | 1 | Capacity 820 g, readability 0.01 g |
@@ -17,6 +17,20 @@ per-device and can be adapted.
 | Light | NEEWER RGB62 | 1 | White/red/green/blue illumination, controlled over Bluetooth LE (`src/imaging/`) |
 | IoT sensor board | Raspberry Pi Zero WH + Waveshare Environment Sensor HAT | 1 | Temperature, humidity, illuminance, UV, VOC, 3-axis acceleration and angular velocity (magnetometer not read; see `src/monitoring/README.md`) |
 | Control PC | — | 1 | Connects to all devices via Wi-Fi or USB |
+
+**Note on the hot-plate stirrer.** The RET control-visc has a built-in weighing
+function, but it is of no use for this platform: IKA specifies a weighing range of
+10–5000 g with an accuracy of ±(0.3 % + 2) g, so a 5 g dispense would carry an
+uncertainty of about ±2 g. All mass measurements in SAIGEN are therefore
+made with the electronic balance, and the driver in `src/devices/ika/` only uses the
+stirring and temperature commands (IKA NAMUR command set over RS-232/USB). Any IKA
+plate with that interface is sufficient; the **IKA Plate (RCT digital)** (RT–310 °C,
+50–1500 rpm, RS-232 and USB, same NAMUR commands) is the cheaper choice we would
+recommend for a new build. Japanese list prices on ika.com in September 2026:
+RET control-visc JPY 298,000, IKA Plate (RCT digital) JPY 184,000. We have not yet
+run the driver against an RCT digital ourselves; the commands it sends
+(`OUT_SP_2`, `OUT_SP_4`, `START_2/4`, `STOP_2/4`, `IN_PV_x`) are documented for both
+models, but confirm on your unit with `--mock` first and then a short real test.
 
 ## Fabrication
 

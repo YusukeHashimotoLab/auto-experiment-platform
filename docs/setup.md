@@ -12,7 +12,8 @@ See [`bom.md`](bom.md) for the full list. The minimum for the ZIF-8 demonstratio
 - 2 × robot arm (Dobot Magician), USB
 - 2 × electric pipette (Sartorius Picus 2, 10 mL), USB (Bluetooth is also supported)
 - 1 × electronic balance (Sartorius BCE822i) with RS-232C/USB serial
-- 2 × hot-plate stirrer (IKA RET control-visc) — optional, RS-232C
+- 2 × hot-plate stirrer (IKA RET control-visc, or a cheaper IKA plate with the same
+  NAMUR serial interface such as the IKA Plate (RCT digital); see `bom.md`) — optional, RS-232C/USB
 - 1 × USB webcam
 - 3D-printed fixtures from `cad/` (pipette holders on the arm tips, flask holders,
   balance splash guard)
