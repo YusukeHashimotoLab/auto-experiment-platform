@@ -93,6 +93,22 @@ the solution dispensing speed was quantified and reproduced.
    end to end without hardware, *Stop* aborts through the same emergency-stop path
    as Ctrl+C, and the run leaves the same `logs/<date>/…` folder as the CLI.
 
+## Using SAIGEN with an AI coding agent
+
+The intended way to adopt SAIGEN is to clone (or download) the repository, open it
+in an AI coding agent such as Claude Code, Codex or Cursor, and let the agent adapt
+it to your hardware in conversation. [`CLAUDE.md`](CLAUDE.md) (identical to
+[`AGENTS.md`](AGENTS.md)) tells the agent how the repository is organised, how to
+verify changes without hardware, and what it must not do on its own — in particular,
+it must never start a real run or loosen the workspace limits without you asking.
+A first message that works well:
+
+> Read CLAUDE.md, then help me adapt this platform to my hardware: one Dobot Magician
+> on COM3 with a Picus 2 pipette on COM4, a BCE8221 balance on COM8 and no second robot.
+> Validate and mock-run an example flow when you are done.
+
+Everything the agent does is also available by hand through the steps above.
+
 The flow format is described in [`docs/experimental-flow.md`](docs/experimental-flow.md),
 the spreadsheet input in [`docs/csv-runner.md`](docs/csv-runner.md); the ZIF-8 flows —
 JSON equivalents of the spreadsheet sequence the paper's batches were run with — are in
