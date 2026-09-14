@@ -17,12 +17,18 @@ Bounding boxes are taken from the meshes.
 |---|---|---|---|---|
 | `robot-arm-holder/` | Pedestal that fixes the robot arm (Dobot Magician) to the bench and raises it by 210 mm | `dobot_magician_holder_210mm.stl` | `dobot_magician_holder_210mm.f3d` | 150 × 150 × 211 |
 | `pipette-holder/` | Holder fixing the electric pipette (Sartorius Picus 2) to the robot arm tip | `picus2_holder.stl` | `picus2_holder.f3d` | 32 × 67 × 135 |
-| `balance-cover/` | Liquid-splash cover for the electronic balance (Sartorius BCE822i), with windshield | `balance_cover_bce822i.stl` | *not yet added* | 275 × 240 × 109 |
+| `balance-cover/` | Liquid-splash cover for the electronic balance (Sartorius BCE822i), with windshield; its top plate has a Ø82 mm opening for the vessel adapters below | `balance_cover_bce822i.stl` | `balance_cover_bce822i.f3d` | 275 × 240 × 109 |
+| `balance-cover/adapters/` | Vessel adapter for the cover opening: ring for a No. 4 screw-cap vial (13.5 mL; e.g. AS ONE 9-852-06), Ø25 mm chamfered hole | `vial_adapter_screw_no4.stl` | `vial_adapter_screw_no4.f3d` | 92 × 92 × 10 |
+| `balance-cover/adapters/` | Vessel adapter for the cover opening: sleeve for a 50 mL centrifuge tube, Ø30 mm bore | `tube_adapter_centrifuge_50ml.stl` | `tube_adapter_centrifuge_50ml.f3d` | 90 × 92 × 70 |
 | `imaging-stand/` | Holding stand for the appearance-imaging system (light, sample, camera) | `imaging_stand_assembly.stl` (one mesh of the whole assembly) | `imaging_stand_assembly.f3z` (Fusion archive: stand, assembly and light fixture designs) | 204 × 90 × 100 |
 | `imaging-stand/` | Light shield placed over the imaging stand | `imaging_stand_light_shield.stl` | `imaging_stand_light_shield.f3d` | 250 × 120 × 120 |
 
 Notes:
 
+- The two vessel adapters share the same seat: a Ø92 mm flange resting on the top
+  plate of the balance cover and a Ø81 mm spigot that drops into its Ø82 mm opening,
+  so they are interchangeable without modifying the cover. Print one per vessel
+  type you use.
 - `.f3d` is a single Fusion 360 design; `.f3z` is a Fusion 360 archive that bundles
   an assembly with the designs it references. Open either with *File → Open* in
   Fusion 360 (upload to your project).
@@ -35,5 +41,4 @@ Notes:
 - STEP exports are not included; export them from the `.f3d` / `.f3z` sources if you
   need a neutral format.
 
-<!-- TODO: add balance-cover .f3d.
-     Add recommended print settings (material, layer height, infill) per component. -->
+<!-- TODO: add recommended print settings (material, layer height, infill) per component. -->
