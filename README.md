@@ -9,12 +9,13 @@ rather than full autonomy.
 
 Repository: https://github.com/YusukeHashimotoLab/saigen
 
-This repository accompanies the paper:
-
-> *Quantitative control and improved reproducibility of materials synthesis processes
-> using an automated experimentation platform*
-> (submitted to Science and Technology of Advanced Materials: Methods)
-> <!-- TODO: add DOI / preprint link when available -->
+A manuscript describing the platform and its ZIF-8 demonstration is in preparation
+(working title: *Quantitative control and improved reproducibility of materials
+synthesis processes using an automated experimentation platform*). It is referred to
+as "the paper" throughout this repository; a citation will be added here once it is
+available.
+<!-- TODO: add the citation / DOI when the manuscript is published, and add a
+     preferred-citation block to CITATION.cff. -->
 
 The platform combines commercially available instruments (robot arms, electric
 pipettes, web cameras, an electronic balance) with 3D-printed fixtures, and operates
@@ -135,5 +136,6 @@ setup.
 
 ## Citing
 
-If you use SAIGEN, please cite the paper above. Citation metadata is provided
-in [`CITATION.cff`](CITATION.cff).
+If you use SAIGEN, please cite the software using the metadata in
+[`CITATION.cff`](CITATION.cff) (GitHub's "Cite this repository" button). A paper
+citation will be added once the manuscript above is published.

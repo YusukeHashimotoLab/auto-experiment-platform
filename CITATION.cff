@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite both the software itself and the paper below."
+message: "If you use this software, please cite it using the metadata below."
 title: "SAIGEN: Standardized Automation Infrastructure for Generalizable Experiment reproductioN"
 abstract: >-
   Open-source control software for an automated materials-synthesis platform:
@@ -38,37 +38,5 @@ keywords:
   - robotics
   - reproducibility
   - metal-organic framework
-preferred-citation:
-  type: article
-  title: "Quantitative control and improved reproducibility of materials synthesis processes using an automated experimentation platform"
-  journal: "Science and Technology of Advanced Materials: Methods"
-  year: 2026
-  # TODO: status is a placeholder - update to "published" (or remove) once the
-  # article is out, and add doi, volume, issue, start/end pages or article number.
-  status: submitted
-  authors:
-    - family-names: Hashimoto
-      given-names: Yusuke
-      affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan"
-      orcid: "https://orcid.org/0000-0002-1886-9332"
-    - family-names: Muramoto
-      given-names: Takaya
-      affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
-    - family-names: Terada
-      given-names: Hikari
-      affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
-    - family-names: Song
-      given-names: Harim
-      affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
-    - family-names: Wang
-      given-names: Yuan
-      affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
-    - family-names: Tomai
-      given-names: Takaaki
-      affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
-      orcid: "https://orcid.org/0000-0003-0296-6565"
-  contact:
-    - family-names: Tomai
-      given-names: Takaaki
-      email: takaaki.tomai.e6@tohoku.ac.jp
-      orcid: "https://orcid.org/0000-0003-0296-6565"
+# A preferred-citation block pointing at the paper will be added once the
+# manuscript describing the platform is published.
