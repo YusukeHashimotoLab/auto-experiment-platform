@@ -9,11 +9,23 @@ type: software
 authors:
   - family-names: Hashimoto
     given-names: Yusuke
-    affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
+    affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan"
     orcid: "https://orcid.org/0000-0002-1886-9332"
+  - family-names: Muramoto
+    given-names: Takaya
+    affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+  - family-names: Terada
+    given-names: Hikari
+    affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+  - family-names: Song
+    given-names: Harim
+    affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+  - family-names: Wang
+    given-names: Yuan
+    affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
   - family-names: Tomai
     given-names: Takaaki
-    affiliation: "Tohoku University"
+    affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
     orcid: "https://orcid.org/0000-0003-0296-6565"
 license: MIT
 version: "0.1.0"
@@ -35,13 +47,29 @@ preferred-citation:
   # TODO: status is a placeholder - update to "published" (or remove) once the
   # article is out, and add doi, volume, issue, start/end pages or article number.
   status: submitted
-  # TODO: confirm the author list matches the paper's final author order.
   authors:
     - family-names: Hashimoto
       given-names: Yusuke
-      affiliation: "Frontier Research Institute for Interdisciplinary Sciences (FRIS), Tohoku University"
+      affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan"
       orcid: "https://orcid.org/0000-0002-1886-9332"
+    - family-names: Muramoto
+      given-names: Takaya
+      affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+    - family-names: Terada
+      given-names: Hikari
+      affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+    - family-names: Song
+      given-names: Harim
+      affiliation: "School of Engineering, Tohoku University, 6-6-04 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan"
+    - family-names: Wang
+      given-names: Yuan
+      affiliation: "Graduate School of Engineering, Tohoku University, 6-6-11 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8579, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
     - family-names: Tomai
       given-names: Takaaki
-      affiliation: "Tohoku University"
+      affiliation: "Frontier Research Institute for Interdisciplinary Sciences, Tohoku University, 6-3 Aramaki Aza Aoba, Aoba-ku, Sendai 980-8578, Japan; Institute of Multidisciplinary Research for Advanced Materials, Tohoku University, 2-1-1 Katahira, Aoba-ku, Sendai 980-8577, Japan"
+      orcid: "https://orcid.org/0000-0003-0296-6565"
+  contact:
+    - family-names: Tomai
+      given-names: Takaaki
+      email: takaaki.tomai.e6@tohoku.ac.jp
       orcid: "https://orcid.org/0000-0003-0296-6565"
