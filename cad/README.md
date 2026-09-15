@@ -5,7 +5,16 @@ Fusion 360 and printed on a Bambu Lab X1E.
 
 **License: CC BY 4.0** (https://creativecommons.org/licenses/by/4.0/).
 You may share and adapt these models, including commercially, with attribution
-to the paper (see repository README).
+to the designers listed below and to the paper (see repository README).
+
+## Designers
+
+| Designer | Affiliation | Contact | Components |
+|---|---|---|---|
+| Takaya Muramoto (村元貴哉) | Graduate School of Engineering, Tohoku University | muramoto.takaya.s1@dc.tohoku.ac.jp | `pipette-holder/` |
+| Yusuke Hashimoto (橋本佑介) | Frontier Research Institute for Interdisciplinary Sciences, Tohoku University | yusuke.hashimoto.b8@tohoku.ac.jp | `robot-arm-holder/`, `balance-cover/` (cover and adapters), `imaging-stand/` |
+
+Questions about a model, or corrections to it, go to its designer.
 
 ## Components
 
@@ -13,15 +22,15 @@ Every part is provided as a binary STL (millimetres, exported from Fusion 360),
 ready to slice, and — where available — as the editable Fusion 360 source.
 Bounding boxes are taken from the meshes.
 
-| Directory | Component | Print file | Editable source | Size X × Y × Z (mm) |
-|---|---|---|---|---|
-| `robot-arm-holder/` | Pedestal that fixes the robot arm (Dobot Magician) to the bench and raises it by 210 mm | `dobot_magician_holder_210mm.stl` | `dobot_magician_holder_210mm.f3d` | 150 × 150 × 211 |
-| `pipette-holder/` | Holder fixing the electric pipette (Sartorius Picus 2) to the robot arm tip | `picus2_holder.stl` | `picus2_holder.f3d` | 32 × 67 × 135 |
-| `balance-cover/` | Liquid-splash cover for the electronic balance (Sartorius BCE822i), with windshield; its top plate has a Ø82 mm opening for the vessel adapters below | `balance_cover_bce822i.stl` | `balance_cover_bce822i.f3d` | 275 × 240 × 109 |
-| `balance-cover/adapters/` | Vessel adapter for the cover opening: ring for a No. 4 screw-cap vial (13.5 mL; e.g. AS ONE 9-852-06), Ø25 mm chamfered hole | `vial_adapter_screw_no4.stl` | `vial_adapter_screw_no4.f3d` | 92 × 92 × 10 |
-| `balance-cover/adapters/` | Vessel adapter for the cover opening: sleeve for a 50 mL centrifuge tube, Ø30 mm bore | `tube_adapter_centrifuge_50ml.stl` | `tube_adapter_centrifuge_50ml.f3d` | 90 × 92 × 70 |
-| `imaging-stand/` | Holding stand for the appearance-imaging system (light, sample, camera) | `imaging_stand_assembly.stl` (one mesh of the whole assembly) | `imaging_stand_assembly.f3z` (Fusion archive: stand, assembly and light fixture designs) | 204 × 90 × 100 |
-| `imaging-stand/` | Light shield placed over the imaging stand | `imaging_stand_light_shield.stl` | `imaging_stand_light_shield.f3d` | 250 × 120 × 120 |
+| Directory | Component | Print file | Editable source | Size X × Y × Z (mm) | Designer |
+|---|---|---|---|---|---|
+| `robot-arm-holder/` | Pedestal that fixes the robot arm (Dobot Magician) to the bench and raises it by 210 mm | `dobot_magician_holder_210mm.stl` | `dobot_magician_holder_210mm.f3d` | 150 × 150 × 211 | Y. Hashimoto |
+| `pipette-holder/` | Holder fixing the electric pipette (Sartorius Picus 2) to the robot arm tip | `picus2_holder.stl` | `picus2_holder.f3d` | 32 × 67 × 135 | T. Muramoto |
+| `balance-cover/` | Liquid-splash cover for the electronic balance (Sartorius BCE822i), with windshield; its top plate has a Ø82 mm opening for the vessel adapters below | `balance_cover_bce822i.stl` | `balance_cover_bce822i.f3d` | 275 × 240 × 109 | Y. Hashimoto |
+| `balance-cover/adapters/` | Vessel adapter for the cover opening: ring for a No. 4 screw-cap vial (13.5 mL; e.g. AS ONE 9-852-06), Ø25 mm chamfered hole | `vial_adapter_screw_no4.stl` | `vial_adapter_screw_no4.f3d` | 92 × 92 × 10 | Y. Hashimoto |
+| `balance-cover/adapters/` | Vessel adapter for the cover opening: sleeve for a 50 mL centrifuge tube, Ø30 mm bore | `tube_adapter_centrifuge_50ml.stl` | `tube_adapter_centrifuge_50ml.f3d` | 90 × 92 × 70 | Y. Hashimoto |
+| `imaging-stand/` | Holding stand for the appearance-imaging system (light, sample, camera) | `imaging_stand_assembly.stl` (one mesh of the whole assembly) | `imaging_stand_assembly.f3z` (Fusion archive: stand, assembly and light fixture designs) | 204 × 90 × 100 | Y. Hashimoto |
+| `imaging-stand/` | Light shield placed over the imaging stand | `imaging_stand_light_shield.stl` | `imaging_stand_light_shield.f3d` | 250 × 120 × 120 | Y. Hashimoto |
 
 Notes:
 
