@@ -24,6 +24,9 @@ As a demonstration, ZIF-8 (a metal–organic framework) was synthesized with a
 two-solution mixing system, and the dependence of its particle size distribution on
 the solution dispensing speed was quantified and reproduced.
 
+**Video:** the two-solution mixing system built on this platform, in operation:
+https://youtu.be/5X2-4LuQfns
+
 ## Repository layout
 
 | Path | Contents |
@@ -70,7 +73,8 @@ the solution dispensing speed was quantified and reproduced.
    and video recording that real runs start by default.
 
 7. Or set the parameters in a spreadsheet — **this is the path used for the paper's
-   ZIF-8 experiments**: the two-solution mixing experiment runs from a
+   ZIF-8 experiments**: the two-solution mixing experiment (shown in the
+   [video](https://youtu.be/5X2-4LuQfns) above) runs from a
    `parameter,value,note` CSV, with no JSON at all:
 
    ```bash
