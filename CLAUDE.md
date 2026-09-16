@@ -36,7 +36,7 @@ configuration and flow files, not in the driver code.
 | `src/imaging/` | Appearance-imaging system (light + camera), separate README. |
 | `detection/` | YOLOv8 object detection. **AGPL-3.0**, isolated on purpose; never import it from `src/`. |
 | `examples/zif8/` | Example flows of the paper's ZIF-8 demonstration. |
-| `docs/` | Bill of materials, setup guide, flow format reference, spreadsheet guide. |
+| `docs/` | Bill of materials, setup guide, flow format reference, spreadsheet guide, guide to adding an instrument. |
 | `tests/`, `src/monitoring/tests/` | Unit tests; none need hardware. |
 
 ## How to verify a change (no hardware needed)
@@ -104,7 +104,7 @@ schema, the executor or `config.yaml`. The CI workflow in
   natural language if an API key is configured.
 - *"The robot hit something / a move was rejected"*: see rule 2. Collect the
   coordinates from `logs/<date>/<flow>_<time>/run.log` and report.
-- *"Add a new instrument"*: add a driver package under `src/devices/`, a mock
-  counterpart, register it with `SharedDevices` / `MockSharedDevices`, extend
-  the flow schema and validator, and add tests and a section in
-  `docs/experimental-flow.md`.
+- *"Add a new instrument"*: follow `docs/adding-an-instrument.md` step by
+  step: a driver package under `src/devices/`, a mock counterpart, registration
+  with `SharedDevices` / `MockSharedDevices`, the flow schema and executor, the
+  run-log column, configuration keys, tests and documentation.

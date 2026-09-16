@@ -37,7 +37,7 @@ the solution dispensing speed was quantified and reproduced.
 | `src/imaging/` | Appearance-imaging system: NEEWER RGB62 light + Logitech C920n camera control, white/red/green/blue capture sequence, cropped-image comparison and depth-direction transmitted-light profiles (paper Figure 6) |
 | `detection/` | Object detection based on YOLOv8 — **kept separate for licensing reasons, see below** |
 | `cad/` | CAD design bank of 3D-printable experimental components (STL + editable Fusion 360 sources) |
-| `docs/` | Bill of materials, setup guide, experimental-flow format reference, spreadsheet-input guide |
+| `docs/` | Bill of materials, setup guide, experimental-flow format reference, spreadsheet-input guide, guide to adding an instrument |
 | `examples/zif8/` | Sample experimental flows of the ZIF-8 demonstration (JSON equivalents of the spreadsheet sequence) and monitoring CSV templates |
 | `examples/dispensing_stability/` | Measured data of the 100-shot dispensing-repeatability test and the script that recorded it |
 
@@ -111,7 +111,8 @@ A first message that works well:
 Everything the agent does is also available by hand through the steps above.
 
 The flow format is described in [`docs/experimental-flow.md`](docs/experimental-flow.md),
-the spreadsheet input in [`docs/csv-runner.md`](docs/csv-runner.md); the ZIF-8 flows —
+the spreadsheet input in [`docs/csv-runner.md`](docs/csv-runner.md), and adding an
+instrument to the platform in [`docs/adding-an-instrument.md`](docs/adding-an-instrument.md); the ZIF-8 flows —
 JSON equivalents of the spreadsheet sequence the paper's batches were run with — are in
 [`examples/zif8/`](examples/zif8/).
 
